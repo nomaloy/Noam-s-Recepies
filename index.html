@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="מתכונים">
+<meta name="theme-color" content="#F4F5EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161A12" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}*,*::before,*::after{box-sizing:inherit}body{margin:0;-webkit-text-size-adjust:100%}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>המתכונים של נעם</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Suez+One&family=Assistant:wght@400;600;700&family=IBM+Plex+Sans+Hebrew:wght@500;600&display=swap">
+<style>
+/* Layout: kitchen binder — sticky search + category tabs, index of recipe cards; recipe opens as a two-column page (ingredients rail, numbered method) */
+:root{
+  --bg:#F4F5EF; --surface:#FFFFFF; --ink:#1F2419; --muted:#626B57; --line:#DADFCF;
+  --accent:#3F5E25; --accent-soft:#E3EBD6; --flag:#A8432A; --flag-soft:#F7E3DC; --done:#9AA38E;
+  --f-display:"Suez One","Frank Ruhl Libre",Georgia,serif;
+  --f-body:"Assistant","Segoe UI","Arial Hebrew",Arial,sans-serif;
+  --f-data:"IBM Plex Sans Hebrew","Assistant",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#161A12; --surface:#1F241A; --ink:#E8EBE0; --muted:#A1AA92; --line:#343B2B;
+  --accent:#A9C97F; --accent-soft:#2C3822; --flag:#F0957A; --flag-soft:#3A2520; --done:#6A7360; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161A12; --surface:#1F241A; --ink:#E8EBE0; --muted:#A1AA92; --line:#343B2B;
+  --accent:#A9C97F; --accent-soft:#2C3822; --flag:#F0957A; --flag-soft:#3A2520; --done:#6A7360; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;direction:rtl;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1080px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:18px 10px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,5vw,40px);margin:0;line-height:1.1;color:var(--accent)}
+.count{font-family:var(--f-data);font-size:14px;color:var(--muted)}
+.search{margin-top:12px;display:flex;gap:8px}
+.search input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-block:10px 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 13px;font-size:15px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
+.chip .n{font-family:var(--f-data);font-size:12px;opacity:.7;margin-inline-start:4px}
+
+main{padding-block:20px 60px}
+.group{margin-bottom:30px}
+.group h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0 0 10px;display:flex;align-items:baseline;gap:10px}
+.group h2 small{font-family:var(--f-data);font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.card{display:flex;flex-direction:column;gap:6px;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card .t{font-weight:700;font-size:18px;line-height:1.3}
+.card .meta{display:flex;gap:12px;font-family:var(--f-data);font-size:13px;color:var(--muted);align-items:center;flex-wrap:wrap}
+.star{color:var(--accent)}
+.flagpill{background:var(--flag-soft);color:var(--flag);border-radius:999px;padding:1px 8px;font-size:12px}
+.empty{color:var(--muted);padding:40px 0;text-align:center}
+
+/* recipe view */
+.back{border:0;background:none;color:var(--accent);font-weight:600;padding:4px 0;display:inline-flex;gap:6px;align-items:center}
+.rhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin:8px 0 18px}
+.rhead h2{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,6vw,46px);line-height:1.15;margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--f-data);font-size:13px;letter-spacing:.04em;color:var(--muted);margin-bottom:4px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tbtn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px;font-size:15px}
+.tbtn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.layout{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:28px;align-items:start}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+.ing{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+@media (max-width:760px){.ing{position:static}}
+.ing h3,.method h3{font-family:var(--f-display);font-weight:400;font-size:20px;margin:0 0 8px}
+.ing h4,.method h4{font-size:14px;font-weight:700;color:var(--accent);margin:14px 0 4px;letter-spacing:.02em}
+.ing ul{list-style:none;margin:0;padding:0}
+.method{min-width:0}
+.method ol{list-style:none;margin:0;padding:0;counter-reset:s}
+.method li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:10px;padding:10px 8px;border-radius:10px;cursor:pointer;max-width:68ch}
+.method li::before{content:counter(s);font-family:var(--f-data);font-weight:600;font-size:15px;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin-top:1px;font-variant-numeric:tabular-nums}
+.method li:hover{background:var(--accent-soft)}
+.method li.done{color:var(--done)}
+.method li.done::before{background:var(--line);color:var(--muted)}
+.flag{display:block;margin-top:6px;background:var(--flag-soft);color:var(--flag);border-radius:8px;padding:6px 10px;font-size:15px}
+.flag b{font-weight:700}
+.cook body,.cook{font-size:20px}
+.calcpill{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 8px;font-size:12px;font-weight:600}
+.calcframe{display:block;width:100%;min-height:900px;border:0;background:var(--bg)}
+.foot{color:var(--muted);font-size:14px;margin-top:28px;font-family:var(--f-data)}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+
+/* bilingual + quantities */
+[dir="ltr"] body,html[dir="ltr"] body{direction:ltr}
+.langseg{display:inline-flex;gap:4px;background:var(--accent-soft);border-radius:999px;padding:3px}
+.langseg button{border:0;background:none;border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600;color:var(--muted)}
+.langseg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.brandr{display:flex;gap:12px;align-items:center}
+.tiles{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 22px;align-items:stretch}
+.tile{background:var(--accent);color:var(--bg);border-radius:12px;padding:12px 16px;min-width:0}
+.tile.quiet{background:var(--accent-soft);color:var(--accent)}
+.tedit{display:flex;align-items:baseline;gap:8px}
+.tin{direction:ltr;width:5ch;font:inherit;font-family:var(--f-data);font-size:26px;font-weight:600;text-align:center;color:inherit;background:rgba(255,255,255,.12);border:1px solid currentColor;border-radius:9px;padding:2px 6px;font-variant-numeric:tabular-nums}
+.tile.quiet .tin{background:var(--surface)}
+.tu{font-size:15px;opacity:.85}
+.tile .tedit{gap:10px;margin:6px 0 4px}
+.pm{width:40px;height:40px;border-radius:50%;border:1px solid currentColor;background:transparent;color:inherit;font-size:22px;line-height:1;display:grid;place-items:center;padding:0}
+.pm:hover{background:rgba(255,255,255,.14)}
+.linkbtn{border:0;background:none;color:inherit;text-decoration:underline;padding:0;font-size:inherit}
+.tl{font-size:13px;opacity:.8;margin-top:4px}
+.steps-quick{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.qbtn{font-family:var(--f-data);min-width:48px}
+.ihead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.hint{font-size:13px;color:var(--muted)}
+.irow{display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);line-height:1.4}
+.ing li:last-child .irow{border-bottom:0}
+.irow input[type=checkbox]{margin:0;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.iname{flex:1;min-width:0;cursor:pointer}
+.iname small{display:block;font-size:12.5px;color:var(--muted);font-family:var(--f-data)}
+.irow input[type=checkbox]:checked ~ .iname,.irow input[type=checkbox]:checked + .iname{color:var(--done);text-decoration:line-through}
+.qty{display:flex;align-items:baseline;gap:5px;flex:none;white-space:nowrap}
+.qin{direction:ltr;width:4.6ch;font:inherit;font-family:var(--f-data);font-size:16px;font-weight:600;text-align:center;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 4px;font-variant-numeric:tabular-nums}
+.qin:focus{border-color:var(--accent)}
+.qu{font-size:13px;color:var(--muted);min-width:3.2ch}
+.num{unicode-bidi:isolate}
+.amt{font-family:var(--f-data);font-weight:600;font-size:15px}
+.method li b{font-weight:700;color:var(--accent);font-family:var(--f-data)}
+.ing{max-height:none}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top" id="top">
+    <div class="brand">
+      <h1 id="brand">המתכונים של נעם</h1>
+      <div class="brandr"><span class="count" id="count"></span>
+      <div class="langseg" id="langSeg" role="group" aria-label="Language"><button data-v="he" aria-pressed="true">עברית</button><button data-v="en" aria-pressed="false">English</button></div></div>
+    </div>
+    <div class="search"><input id="q" type="search" placeholder=""></div>
+    <div class="chips" id="chips" role="toolbar" aria-label="קטגוריות"></div>
+  </header>
+  <main id="main"></main>
+</div>
+
+<script type="text/plain" id="challahSrc"><!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-title" content="חלה">
+<title>חלה · Challah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Suez+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#EFE6D9; --panel:#F8F3EA; --panel-edge:#DCCBB3;
+  --ink:#3A2A1C; --muted:#8C775F; --soft:#7A6650;
+  --line:#E2D4BE; --dot:#DFD0B8; --chip:#CBB79C; --chip-hover:#E3D5C0;
+  --card:#3A2A1C; --card-ink:#F4EADA; --card-lbl:#C6B398; --card-edge:#55432F;
+  --quiet:#E4D7C2; --quiet-ink:#4A3726;
+  --field:#FFFDF8; --field-edge:#E0D0B6; --accent:#B5761F; --gold:#E8B44A; --bullet:#C8A96B;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#221A13; --panel:#2C2219; --panel-edge:#3C2F22;
+    --ink:#F2E9DB; --muted:#A89176; --soft:#B9A386;
+    --line:#3E3124; --dot:#3A2E22; --chip:#5A4733; --chip-hover:#3A2E22;
+    --card:#120D08; --card-ink:#F4EADA; --card-lbl:#B49F84; --card-edge:#463726;
+    --quiet:#3A2E22; --quiet-ink:#EFE3D0;
+    --field:#1C150F; --field-edge:#4A3A29; --accent:#E8B44A;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#221A13; --panel:#2C2219; --panel-edge:#3C2F22;
+    --ink:#F2E9DB; --muted:#A89176; --soft:#B9A386;
+    --line:#3E3124; --dot:#3A2E22; --chip:#5A4733; --chip-hover:#3A2E22;
+    --card:#120D08; --card-ink:#F4EADA; --card-lbl:#B49F84; --card-edge:#463726;
+    --quiet:#3A2E22; --quiet-ink:#EFE3D0;
+    --field:#1C150F; --field-edge:#4A3A29; --accent:#E8B44A;
+  }
+
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*,*::before,*::after{box-sizing:inherit;}
+body{margin:0;background:var(--bg);border-radius:14px;color:var(--ink);
+  font-family:Heebo,"Segoe UI","Arial Hebrew",system-ui,sans-serif;
+  padding:20px 18px 32px;-webkit-text-size-adjust:100%;}
+body.en{font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;}
+.wrap{max-width:680px;margin:0 auto;}
+.topbar{display:flex;justify-content:flex-end;margin-bottom:10px;}
+.lang{display:flex;gap:6px;background:var(--quiet);border-radius:999px;padding:3px;}
+.lang button{border:none;background:none;font-family:inherit;font-size:13px;font-weight:600;
+  color:var(--soft);padding:5px 12px;border-radius:999px;cursor:pointer;}
+.lang button[data-on="1"]{background:var(--card);color:var(--card-ink);}
+h1{font-size:36px;font-weight:900;letter-spacing:-.5px;line-height:1.05;margin:0;}
+body.en h1{font-weight:800;letter-spacing:-1px;}
+.sub{font-size:15px;font-weight:300;color:var(--soft);margin:10px 0 22px;max-width:52ch;line-height:1.6;}
+.seg-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.seg-lbl{font-size:13px;font-weight:700;color:var(--soft);width:66px;}
+.seg{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{background:none;border:1px solid var(--chip);color:var(--soft);border-radius:999px;
+  padding:7px 14px;font-size:14px;font-family:inherit;cursor:pointer;transition:background .15s,color .15s;}
+.chip:hover{background:var(--chip-hover);}
+.chip[data-on="1"]{background:var(--card);border-color:var(--card);color:var(--card-ink);}
+.totals{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0 26px;}
+.total{background:var(--card);color:var(--card-ink);border-radius:14px;padding:16px 18px;}
+.total-quiet{background:var(--quiet);color:var(--quiet-ink);}
+.total-quiet .total-lbl{color:var(--soft);}
+.total-num{font-size:29px;font-weight:900;line-height:1.15;padding:5px 1px 6px;}
+.total-lbl{font-size:12.5px;font-weight:300;color:var(--card-lbl);margin-top:6px;line-height:1.45;}
+.total-edit{display:flex;align-items:baseline;gap:8px;}
+.total-input{box-sizing:content-box;flex:0 0 auto;font-family:inherit;font-size:29px;font-weight:900;
+  line-height:1.15;color:var(--card-ink);background:rgba(255,255,255,.06);border:1px solid var(--card-edge);
+  border-radius:9px;padding:4px 10px 5px;direction:ltr;text-align:center;}
+.total-input:focus{outline:none;border-color:var(--gold);background:rgba(232,180,74,.12);}
+.total-unit{font-size:15px;font-weight:400;color:var(--card-lbl);}
+.panel{background:var(--panel);border-radius:14px;padding:20px 20px 12px;box-shadow:0 1px 0 var(--panel-edge);}
+.head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;
+  padding-bottom:12px;border-bottom:1px solid var(--line);}
+.headline{font-size:15px;font-weight:700;}
+.hint{font-size:13px;font-weight:300;color:var(--muted);}
+.row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px dotted var(--dot);}
+.row:last-child{border-bottom:none;}
+.sub-head{font-size:13px;font-weight:700;color:var(--soft);margin:14px 0 2px;padding-top:12px;border-top:1px solid var(--line);}
+.row-top{border-top:1px solid var(--line);margin-top:6px;padding-top:14px;}
+.label{flex:1;font-size:15.5px;font-weight:400;}
+.label small{display:block;font-size:12.5px;color:var(--muted);font-weight:300;margin-top:1px;}
+.inp{width:84px;text-align:center;direction:ltr;font-family:inherit;font-size:18px;font-weight:700;
+  color:var(--ink);background:var(--field);border:1px solid var(--field-edge);border-radius:8px;padding:6px 8px;}
+.inp:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent);}
+.unit{width:42px;font-size:12.5px;color:var(--muted);}
+h2{font-size:14px;font-weight:700;margin:30px 0 12px;color:var(--soft);letter-spacing:.03em;}
+ol.steps{list-style:none;margin:0;padding:0;}
+ol.steps li{position:relative;padding-inline-start:22px;padding-bottom:14px;font-size:15px;line-height:1.65;font-weight:300;}
+ol.steps li::before{content:"";position:absolute;inset-inline-start:4px;top:10px;width:7px;height:7px;
+  border-radius:50%;background:var(--bullet);}
+ol.steps b{font-weight:700;}
+.notes{margin-top:22px;background:var(--panel);border-radius:14px;padding:16px 18px;
+  box-shadow:0 1px 0 var(--panel-edge);}
+.notes h3{margin:0 0 8px;font-size:14px;font-weight:700;}
+.notes p{margin:0 0 10px;font-size:14px;font-weight:300;line-height:1.6;color:var(--soft);}
+.notes p:last-child{margin-bottom:0;}
+.notes b{font-weight:700;color:var(--ink);}
+.foot{margin-top:24px;font-size:12.5px;color:var(--muted);font-weight:300;line-height:1.7;}
+@media (max-width:620px){
+  h1{font-size:29px;}
+  .totals{grid-template-columns:1fr 1fr;}
+  .total-quiet{grid-column:1/-1;}
+  .total-input,.total-num{font-size:25px;}
+  .seg-lbl{width:58px;}
+}
+
+/* ---- matched to the recipe app ---- */
+:root{--bg:#F4F5EF;--panel:#FFFFFF;--panel-edge:#DADFCF;--ink:#1F2419;--muted:#626B57;--soft:#626B57;
+--line:#DADFCF;--dot:#DADFCF;--chip:#DADFCF;--chip-hover:#E3EBD6;--card:#3F5E25;--card-ink:#F4F5EF;--card-lbl:#CFDDBA;--card-edge:#6B8A4C;
+--quiet:#E3EBD6;--quiet-ink:#3F5E25;--field:#FFFFFF;--field-edge:#DADFCF;--accent:#3F5E25;--gold:#A9C97F;--bullet:#3F5E25;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#161A12;--panel:#1F241A;--panel-edge:#343B2B;--ink:#E8EBE0;--muted:#A1AA92;--soft:#A1AA92;
+--line:#343B2B;--dot:#343B2B;--chip:#343B2B;--chip-hover:#2C3822;--card:#A9C97F;--card-ink:#161A12;--card-lbl:#3A4A2A;--card-edge:#7F9F57;
+--quiet:#2C3822;--quiet-ink:#A9C97F;--field:#161A12;--field-edge:#343B2B;--accent:#A9C97F;--gold:#3F5E25;--bullet:#A9C97F;color-scheme:dark;}}
+:root[data-theme="dark"]{--bg:#161A12;--panel:#1F241A;--panel-edge:#343B2B;--ink:#E8EBE0;--muted:#A1AA92;--soft:#A1AA92;
+--line:#343B2B;--dot:#343B2B;--chip:#343B2B;--chip-hover:#2C3822;--card:#A9C97F;--card-ink:#161A12;--card-lbl:#3A4A2A;--card-edge:#7F9F57;
+--quiet:#2C3822;--quiet-ink:#A9C97F;--field:#161A12;--field-edge:#343B2B;--accent:#A9C97F;--gold:#3F5E25;--bullet:#A9C97F;color-scheme:dark;}
+body,body.en{font-family:"Assistant","Segoe UI","Arial Hebrew",Arial,sans-serif;padding:4px 0 24px;border-radius:0;font-size:17px}
+.wrap{max-width:760px;margin:0}
+.topbar{display:none}
+h1{display:none}
+.sub{margin-top:0;font-weight:400;font-size:16px}
+.chip{font-size:15px}
+.chip[data-on="1"]{font-weight:600}
+.lang button[data-on="1"]{background:var(--accent);color:var(--bg)}
+.total{border-radius:12px}
+.total-num,.total-input{font-weight:800}
+.panel,.notes{border:1px solid var(--line);box-shadow:none;border-radius:14px}
+.headline,.notes h3,h2{font-family:"Suez One","Frank Ruhl Libre",Georgia,serif;font-weight:400;font-size:20px;color:var(--ink);letter-spacing:0}
+.label{font-size:16px}
+ol.steps{counter-reset:s}
+ol.steps li{counter-increment:s;padding-inline-start:44px;padding-bottom:16px;font-weight:400;font-size:16.5px;max-width:68ch}
+ol.steps li::before{content:counter(s);inset-inline-start:0;top:1px;width:28px;height:28px;border-radius:50%;
+  background:var(--quiet);color:var(--accent);font-weight:700;font-size:15px;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.notes p{font-weight:400;font-size:15px}
+.inp{font-weight:700;border-radius:10px}
+.total-input:focus{border-color:var(--card-ink);background:rgba(255,255,255,.12)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="lang" id="langSeg">
+      <button data-v="he">עברית</button><button data-v="en">English</button>
+    </div>
+  </div>
+
+  <h1 id="h1"></h1>
+  <p class="sub" id="sub"></p>
+
+  <div class="seg-row">
+    <span class="seg-lbl" id="veganLbl"></span>
+    <div class="seg" id="veganSeg"></div>
+  </div>
+  <div class="seg-row">
+    <span class="seg-lbl" id="fatLbl"></span>
+    <div class="seg" id="fatSeg"></div>
+  </div>
+  <div class="seg-row">
+    <span class="seg-lbl" id="flourSegLbl"></span>
+    <div class="seg" id="flourSeg"></div>
+  </div>
+  <div class="seg-row">
+    <span class="seg-lbl" id="shapeLbl"></span>
+    <div class="seg" id="shapeSeg"></div>
+  </div>
+
+  <div class="totals">
+    <div class="total">
+      <div class="total-edit">
+        <input class="total-input" id="unitTop" inputmode="decimal">
+        <span class="total-unit" id="unitTopUnit"></span>
+      </div>
+      <div class="total-lbl" id="unitTopLbl"></div>
+    </div>
+    <div class="total">
+      <div class="total-edit">
+        <input class="total-input" id="countTop" inputmode="numeric">
+        <span class="total-unit" id="topUnit"></span>
+      </div>
+      <div class="total-lbl" id="countLbl"></div>
+    </div>
+    <div class="total total-quiet">
+      <div class="total-num" id="flourNum"></div>
+      <div class="total-lbl" id="flourLbl"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="head"><span class="headline" id="ingHead"></span><span class="hint" id="ingHint"></span></div>
+    <div id="rows"></div>
+    <div id="washRows"></div>
+    <div class="row row-top">
+      <span class="label" id="countLabel"></span>
+      <input class="inp" id="countInput" inputmode="numeric"><span class="unit" id="countUnit"></span>
+    </div>
+    <div class="row">
+      <span class="label"><span id="doughLabel"></span><small id="doughNote"></small></span>
+      <input class="inp" id="doughInput" inputmode="decimal"><span class="unit" id="doughUnit"></span>
+    </div>
+  </div>
+
+  <h2 id="methodHead"></h2>
+  <ol class="steps" id="steps"></ol>
+
+  <div class="notes">
+    <h3 id="notesHead"></h3>
+    <p id="noteFat"></p>
+    <p id="noteWash"></p>
+    <p id="noteFlour"></p>
+  </div>
+
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+/* ---------- base recipe in grams ----------
+   Flour always totals 800 g at scale 1; only the water moves with the
+   flour's strength — 350 for the 14.4% mix, 360 for a single very strong
+   flour, 330 for a 13.5% brioche flour, which absorbs less.          */
+var REST={oil:58,honey:40,sugar:48,yolks:36,salt:17,yeast:14};
+var OZ=28.3495, BASE_FLOUR=800, WASTE=1.03;   /* dough = pieces x 1.03 (3% loss) */
+
+function mkBase(flours,water){
+  var b={}; for(var f in flours) b[f]=flours[f];
+  b.water=water; for(var r in REST) b[r]=REST[r]; return b;
+}
+var FLOURS={
+  mix:     {base:mkBase({manitoba:550,challahFlour:250},350), knead:0,
+            he:"מניטובה + חלה", en:"Two flours"},
+  strong:  {base:mkBase({flour:800},360), knead:-2,
+            he:"מניטובה בלבד", en:"Strong only"},
+  brioche: {base:mkBase({flour:800},344), knead:0,
+            he:"בריוש 13.5%", en:"Brioche flour"},
+  bread:   {base:mkBase({flour:800},330), knead:0,
+            he:"קמח לחם", en:"Bread flour"}
+};
+/* Supermarket bread flour: Israeli (extra gluten added) vs US (~12-12.7% protein) */
+var BREAD_HE=mkBase({flour:800},330), BREAD_EN=mkBase({flour:800},320);
+for(var m in FLOURS){ var t=0; for(var bk in FLOURS[m].base) t+=FLOURS[m].base[bk]; FLOURS[m].total=t; }
+
+var FLOURNAME={
+  mix:{he:["קמח מניטובה","קמח חלה"],en:["Strong flour (15.5%)","Softer flour (12%)"]},
+  strong:{he:"קמח מניטובה (15.5%)",en:"Strong bread flour (15.5%)"},
+  brioche:{he:"קמח בריוש (13.5%)",en:"Brioche flour (13.5%)"},
+  bread:{he:"קמח לחם (סופר)",en:"Bread flour (supermarket)"}
+};
+var REST_HE=[{k:"water",n:"מים",u:'מ"ל'},{k:"oil",n:"שמן",u:"גר'"},{k:"butter",n:"חמאה (לא מלוחה)",u:"גר'"},{k:"honey",n:"דבש",u:"גר'"},
+ {k:"sugar",n:"סוכר",u:"גר'"},{k:"yolks",n:"חלמונים",u:"גר'"},{k:"salt",n:"מלח",u:"גר'"},
+ {k:"yeast",n:"שמרים יבשים",u:"גר'"}];
+var REST_EN=[{k:"water",n:"Water",cup:236.6,mode:"cup"},{k:"oil",n:"Neutral oil",cup:218,mode:"spoon"},{k:"butter",n:"Unsalted butter",cup:227,mode:"butter"},
+ {k:"honey",n:"Honey",cup:340,mode:"spoon"},{k:"sugar",n:"Granulated sugar",cup:200,mode:"cup"},
+ {k:"yolks",n:"Egg yolks",mode:"yolk"},{k:"salt",n:"Fine sea salt",cup:288,mode:"spoon"},
+ {k:"yeast",n:"Instant yeast",cup:149,mode:"yeast"}];
+
+var lang="he", flour="mix", vegan=false, dairy=false, unitW=600, focusedId=null, shape="loaf", strands=4;
+try{ var st=localStorage.getItem("challah_lang"); if(st==="en"||st==="he") lang=st;
+     vegan=localStorage.getItem("challah_vegan")==="1";
+     dairy=!vegan && localStorage.getItem("challah_dairy")==="1";
+     var sf=localStorage.getItem("challah_flour"); if(FLOURS[sf]) flour=sf; }catch(e){}
+var scale=1800*WASTE/TOT();   /* default: 3 loaves x 600 g */
+
+function isEn(){ return lang==="en"; }
+/* Vegan: no yolks; extra oil = 80% of the yolk weight */
+/* Dairy: butter replaces the oil at 1.2x (butter is ~82% fat), and the ~16% water
+   it brings is taken out of the water. */
+function BASE(){
+  var b=(flour==="bread")?(isEn()?BREAD_EN:BREAD_HE):FLOURS[flour].base;
+  if(!vegan && !dairy) return b;
+  var c={}; for(var k in b) c[k]=b[k];
+  if(vegan){ c.oil=b.oil+0.8*b.yolks; c.yolks=0; }
+  else { c.butter=b.oil*1.2; c.oil=0; c.water=b.water-0.16*c.butter; }
+  return c;
+}
+function TOT(){ var b=BASE(),t=0; for(var k in b) t+=b[k]; return t; }
+function washG(){ return Math.max(40,dough()*0.015); }   /* ~1.5% of dough weight */
+function spoonTxt(g,cup){ var c=g/cup,tb=c*16,ts=c*48; return tb>=1?frac(tb)+" Tbsp":frac(ts)+" tsp"; }
+function washRows(){
+  var en=isEn(), g=washG(), out=[];
+  if(vegan){
+    var ms=g*.3, wa=g*.6, sa=g*.1;
+    out.push([en?"Malt syrup":"מאלט סירופ", W(ms), en?"oz":"גר'", en?spoonTxt(ms,330):""]);
+    out.push([en?"Water":"מים", W(wa), en?"oz":"גר'", en?spoonTxt(wa,236.6):""]);
+    out.push([en?"Fine salt":"מלח", W(sa), en?"oz":"גר'", en?spoonTxt(sa,288):""]);
+  } else {
+    var n=Math.max(1,Math.round(g/55));
+    out.push([en?"Eggs, beaten":"ביצים טרופות", String(n), en?(n===1?"egg":"eggs"):"ביצים", en?"+ 1 tsp water per egg":"+ כפית מים לכל ביצה"]);
+  }
+  out.push([en?"Sesame seeds":"שומשום", "", "", en?"to sprinkle on top":"לפיזור מעל"]);
+  return out;
+}
+function yolkG(){ return FLOURS[flour].base.yolks*scale; }
+function ROWS(){
+  var rows=[], nm=FLOURNAME[flour][isEn()?"en":"he"];
+  if(flour==="mix"){
+    rows.push({k:"manitoba",n:nm[0],u:"גר'",cup:120,mode:"cup"});
+    rows.push({k:"challahFlour",n:nm[1],u:"גר'",cup:120,mode:"cup"});
+  } else {
+    rows.push({k:"flour",n:nm,u:"גר'",cup:120,mode:"cup"});
+  }
+  return rows.concat(isEn()?REST_EN:REST_HE).filter(function(r){ return !(vegan && r.k==="yolks") && !(dairy && r.k==="oil") && !(!dairy && r.k==="butter"); });
+}
+function dough(){ return TOT()*scale; }
+function flourG(){ return BASE_FLOUR*scale; }
+function hydration(){ return BASE().water/BASE_FLOUR*100; }
+function amt(key){ return BASE()[key]*scale; }
+function unitG(){ return isEn()? (unitW||21.25)*OZ : (unitW||600); }
+function loaves(){ return Math.max(1,Math.round(dough()/(unitG()*WASTE))); }
+function actualG(){ return dough()/(loaves()*WASTE); }   /* weight of each piece */
+
+/* ---------- number display ---------- */
+function fmtG(n){ if(!isFinite(n))return"0"; var r=n<25?Math.round(n*2)/2:Math.round(n); return String(r); }
+function fmtOz(grams){ var v=grams/OZ;
+  if(v>=3) return String(Math.round(v*4)/4);
+  if(v>=0.5) return String(Math.round(v*10)/10);
+  return String(Math.round(v*100)/100); }
+function W(grams){ return isEn()?fmtOz(grams):fmtG(grams); }           /* number only */
+function WU(grams){ return W(grams)+(isEn()?" oz":" גר'"); }           /* number + unit */
+function lbText(grams){ var v=grams/OZ, lb=Math.floor(v/16), rest=Math.round((v-lb*16)*10)/10;
+  return lb>0?lb+" lb "+rest+" oz":Math.round(v*10)/10+" oz"; }
+var FR=[[0,""],[.125,"\u215B"],[.25,"\u00BC"],[.333,"\u2153"],[.5,"\u00BD"],[.667,"\u2154"],[.75,"\u00BE"],[.875,"\u215E"],[1,""]];
+function frac(x){ var whole=Math.floor(x),rem=x-whole,best=FR[0];
+  FR.forEach(function(f){ if(Math.abs(f[0]-rem)<Math.abs(best[0]-rem)) best=f; });
+  if(best[0]===1){ whole+=1; best=FR[0]; }
+  if(whole===0&&best[1]==="") return "0";
+  return (whole>0?whole:"")+best[1]; }
+function volText(r,grams){
+  var hyd=Math.round(hydration());
+  if(!isEn()){
+    if(r.k==="water") return hyd+"% הידרציה";
+    return r.k==="yolks" ? "≈ "+(Math.round(grams/18*10)/10)+" חלמונים" : "";
+  }
+  if(r.mode==="yolk") return (Math.round(grams/18*10)/10)+" large yolks";
+  var cups=grams/r.cup, tbsp=cups*16, tsp=cups*48;
+  if(r.mode==="butter") return frac(tbsp)+" Tbsp  ·  "+(Math.round(grams/113.4*10)/10)+" sticks";
+  if(r.mode==="yeast") return frac(tsp)+" tsp  ·  "+(Math.round(grams/7*10)/10)+" packets";
+  if(r.k==="water") return frac(cups)+(cups<1.25?" cup":" cups")+"  ·  "+hyd+"% hydration";
+  if(r.mode==="spoon"||cups<0.25) return tbsp>=1?frac(tbsp)+" Tbsp":frac(tsp)+" tsp";
+  return frac(cups)+(cups<1.25?" cup":" cups"); }
+
+/* ---------- selectors ---------- */
+var shapeSeg=document.getElementById("shapeSeg"), langSeg=document.getElementById("langSeg"), rowsEl=document.getElementById("rows"),
+    flourSeg=document.getElementById("flourSeg"), veganSeg=document.getElementById("veganSeg");
+
+[false,true].forEach(function(v){
+  var b=document.createElement("button"); b.className="chip"; b.setAttribute("data-v",v);
+  b.onclick=function(){
+    if(vegan===v) return;
+    var keep=dough(); vegan=v; if(v) dairy=false; scale=keep/TOT();
+    try{ localStorage.setItem("challah_vegan",v?"1":"0"); localStorage.setItem("challah_dairy",dairy?"1":"0"); }catch(e){}
+    focusedId=null; buildRows(); render(); };
+  veganSeg.appendChild(b); });
+
+var fatSeg=document.getElementById("fatSeg");
+[false,true].forEach(function(v){
+  var b=document.createElement("button"); b.className="chip"; b.setAttribute("data-v",v);
+  b.onclick=function(){
+    if(dairy===v) return;
+    var keep=dough(); dairy=v; if(v) vegan=false; scale=keep/TOT();
+    try{ localStorage.setItem("challah_dairy",v?"1":"0"); localStorage.setItem("challah_vegan",vegan?"1":"0"); }catch(e){}
+    focusedId=null; buildRows(); render(); };
+  fatSeg.appendChild(b); });
+
+["mix","strong","brioche","bread"].forEach(function(v){
+  var b=document.createElement("button"); b.className="chip"; b.setAttribute("data-v",v);
+  b.onclick=function(){
+    if(flour===v) return;
+    var keepDough=dough();              /* switching flour keeps the batch size */
+    flour=v; scale=keepDough/TOT();
+    try{ localStorage.setItem("challah_flour",v); }catch(e){}
+    focusedId=null; buildRows(); render(); };
+  flourSeg.appendChild(b); });
+
+["loaf","rolls"].forEach(function(v){
+  var b=document.createElement("button"); b.className="chip"; b.setAttribute("data-v",v);
+  b.onclick=function(){ if(shape!==v){ shape=v; unitW = isEn()?(v==="rolls"?4.75:21.25):(v==="rolls"?135:600);
+      scale = (v==="rolls"?15:3)*unitG()*WASTE/TOT(); }
+    focusedId=null; render(); };
+  shapeSeg.appendChild(b); });
+Array.prototype.forEach.call(langSeg.children,function(b){
+  b.onclick=function(){
+    var v=b.getAttribute("data-v"); if(v===lang) return;
+    var oldG=unitG(), keepD=dough(); lang=v; scale=keepD/TOT(); unitW = isEn()? Math.round(oldG/OZ*4)/4 : Math.round(oldG);
+    try{ localStorage.setItem("challah_lang",v); }catch(e){}
+    focusedId=null; buildRows(); render(); }; });
+
+function buildRows(){
+  rowsEl.innerHTML="";
+  ROWS().forEach(function(r){
+    var d=document.createElement("div"); d.className="row";
+    d.innerHTML='<span class="label">'+r.n+'<small id="n_'+r.k+'"></small></span>'+
+      '<input class="inp" id="i_'+r.k+'" inputmode="decimal"><span class="unit">'+
+      (isEn()?"oz":(r.u||"גר'"))+'</span>';
+    rowsEl.appendChild(d);
+    bind("i_"+r.k,function(t){ var v=num(t); if(v>0) scale=(isEn()?v*OZ:v)/BASE()[r.k]; });
+  });
+}
+function num(t){ var v=parseFloat(String(t).replace(",",".")); return isFinite(v)?v:NaN; }
+function bind(id,onVal){
+  var el=document.getElementById(id);
+  el.addEventListener("focus",function(){ focusedId=id; el.select(); });
+  el.addEventListener("blur",function(){ focusedId=null; render(); });
+  el.addEventListener("input",function(){ onVal(el.value); render(); });
+}
+function set(id,val){ var el=document.getElementById(id); if(focusedId!==id) el.value=val; }
+
+bind("doughInput",function(t){ var v=num(t); if(v>0)
+  scale=(isEn()? (v<15?v*16:v)*OZ : (v<50?v*1000:v))/TOT(); });
+bind("countInput",function(t){ var c=parseInt(t,10); if(c>0) scale=c*unitG()*WASTE/TOT(); });
+bind("countTop",function(t){ var c=parseInt(t,10); if(c>0) scale=c*unitG()*WASTE/TOT(); });
+bind("unitTop",function(t){ var w=num(t); if(w>0){ var c=loaves(); unitW=w; scale=c*unitG()*WASTE/TOT(); } });
+
+/* ---------- text ---------- */
+function steps(){
+  var flourTxt = (flour==="mix")
+    ? (isEn() ? "<b>"+WU(amt("manitoba"))+"</b> strong flour and <b>"+WU(amt("challahFlour"))+"</b> softer flour"
+              : "<b>"+W(amt("manitoba"))+"</b> מניטובה ו־<b>"+W(amt("challahFlour"))+"</b> קמח חלה")
+    : (isEn() ? "<b>"+WU(amt("flour"))+"</b> flour" : "<b>"+WU(amt("flour"))+"</b> קמח");
+  var strandW=W(actualG()/strands);
+  var big=flourG()>1600, rolls=shape==="rolls";
+  if(isEn()){
+    var len=strands===3?"8":(strands===4?"10":"12");
+    var wash = vegan?'malt syrup wash':'egg wash';
+    var bake = rolls ? 'Bake <b>15–17 minutes at 375°F</b>'
+      : 'Bake <b>'+(actualG()>450?"32–36":(actualG()>300?"24–26":"20"))+' minutes at 375°F</b>';
+    var s=[
+      'In the mixer bowl, add in this order: <b>'+WU(amt("water"))+' ice-cold water</b>, <b>'+WU(amt("honey"))+' honey</b>, '+(dairy?'':'<b>'+WU(amt("oil"))+' oil</b>'+(vegan?'':', '))+(vegan?'':'<b>'+WU(amt("yolks"))+' egg yolks</b>')+' and <b>'+WU(amt("salt"))+' salt</b>. Layer the '+flourTxt+' on top, then <b>'+WU(amt("sugar"))+' sugar</b> and <b>'+WU(amt("yeast"))+' instant yeast</b> over the flour. Start kneading.',
+      (dairy ? 'Once a dough forms, knead on high speed for about <b>3 minutes</b>, until it clears the sides of the bowl. Add <b>'+WU(amt("butter"))+' unsalted butter</b>, soft but not melted, a few small pieces at a time, and keep kneading until each addition is absorbed — <b>8 minutes</b> on high in all — then knead <b>3 more minutes by hand</b>. The dough should come out at about <b>75°F (24°C)</b>.'
+             : 'Once a dough forms, knead on high speed for <b>8 minutes</b>, then knead <b>3 more minutes by hand</b>. The dough should come out at about <b>75°F (24°C)</b>.')+(big?' With this much dough, knead in two batches unless your mixer is 6 qt or larger.':''),
+      'Round the dough, cover, and let it rise 1 to 1½ hours, until doubled.',
+      rolls ? 'Divide into <b>'+loaves()+' pieces of '+WU(actualG())+'</b> each, round them, and rest covered for <b>30 minutes</b>.'
+            : 'Divide into <b>'+(loaves()*strands)+' balls of '+strandW+' oz</b> — '+loaves()+' loaves × '+strands+' strands — round them, and rest covered for <b>30 minutes</b>.',
+      rolls ? 'Roll each piece into a tight ball and set on a parchment-lined sheet pan about 1½ inches apart. Proof uncovered 45–60 minutes, then brush with '+wash+' and scatter sesame seeds on top.'
+            : 'Roll each ball into a rope about '+len+' inches long and braid every '+strands+' ropes into a loaf. <b>Brush with '+wash+'</b> right after shaping, then proof uncovered for 1½ hours.',
+      rolls ? bake+'.' : 'At the end of the final proof, <b>brush a second time</b> and scatter sesame seeds on top.',
+    ];
+    if(!rolls) s.push(bake+'.');
+    return s;
+  }
+  var lenh=strands===3?"20":(strands===4?"25":"30");
+  var washH = vegan?'תערובת מאלט הסירופ':'ביצה טרופה';
+  var bakeH = rolls ? 'אופים <b>15–17 דק\' ב־190°</b> חום עליון־תחתון'
+    : 'אופים <b>'+(actualG()>450?"32–36":(actualG()>300?"24–26":"20"))+' דק\' ב־190°</b> חום עליון־תחתון';
+  var h=[
+    'שמים בקערה לפי הסדר: <b>'+fmtG(amt("water"))+' מ"ל מי קרח</b>, <b>'+WU(amt("honey"))+' דבש</b>, '+(dairy?'':'<b>'+WU(amt("oil"))+' שמן</b>'+(vegan?'':', '))+(vegan?'':'<b>'+WU(amt("yolks"))+' חלמונים</b>')+' ו<b>'+WU(amt("salt"))+' מלח</b>. מעליהם '+flourTxt+', ומעל הקמח <b>'+WU(amt("sugar"))+' סוכר</b> ו<b>'+WU(amt("yeast"))+' שמרים</b>. מתחילים ללוש.',
+    (dairy ? 'לאחר שנוצר בצק לשים במהירות גבוהה כ־<b>3 דק\'</b>, עד שהבצק מתנקה מדפנות הקערה. מוסיפים <b>'+WU(amt("butter"))+' חמאה</b> רכה אך לא מומסת, בחתיכות קטנות, כמה בכל פעם, וממשיכים ללוש עד שהיא נבלעת — בסך הכול <b>8 דק\'</b> במהירות גבוהה — ואז לשים עוד <b>3 דק\' ידנית</b>. הבצק צריך להיות בטמפרטורה של כ־<b>24 מעלות צלזיוס</b>.'
+           : 'לאחר שנוצר בצק לשים במהירות גבוהה <b>8 דק\'</b>, ואז לשים עוד <b>3 דק\' ידנית</b>. הבצק צריך להיות בטמפרטורה של כ־<b>24 מעלות צלזיוס</b>.')+(big?' בכמות הזו כדאי ללוש בשתי מנות אם המלוש קטן מ־6 ליטר.':''),
+    'מכדררים, מכסים ומתפיחים שעה עד שעה וחצי, עד הכפלת נפח.',
+    rolls ? 'מחלקים ל־<b>'+loaves()+' לחמניות של '+WU(actualG())+'</b>, מכדררים ומניחים מכוסה <b>חצי שעה</b>.'
+          : 'מחלקים ל־<b>'+(loaves()*strands)+' כדורים של '+strandW+' גר\'</b> — '+loaves()+' חלות × '+strands+' צמות — מכדררים ומניחים מכוסה <b>חצי שעה</b>.',
+    rolls ? 'מכדררים כל חתיכה לכדור חלק ומניחים בתבנית עם רווח של כ־4 ס"מ, ומתפיחים 45–60 דק\' ללא כיסוי. מברישים ב'+washH+' ומפזרים שומשום.'
+          : 'מגלגלים כל כדור לרצועה באורך כ־'+lenh+' ס"מ וקולעים כל '+strands+' רצועות לחלה. <b>מברישים ב'+washH+'</b> מיד אחרי העיצוב, ומתפיחים שעה וחצי ללא כיסוי.',
+  ];
+  if(!rolls) h.push('בסיום ההתפחה <b>מברישים בשנית</b> ומפזרים שומשום.');
+  h.push(bakeH+'.');
+  return h;
+}
+
+var T={
+ he:{title:"חלה",
+   sub:"שנו כל מספר — קמח, מים, כמות הבצק, מספר החלות או משקל החלה — וכל השאר יתעדכן לפי אותן פרופורציות.",
+   type:"סוג",regular:"רגילה",vegan:"טבעונית",fat:"שומן",pareve:"פרווה (שמן)",dairy:"חלבית (חמאה)",flour:"קמח",shape:"אופים",braid:"קליעה",loaf:"חלה",rolls:"לחמניות",strand:" צמות",
+   doughUnit:"גר'",doughLbl:"משקל הבצק — אפשר להזין כל כמות",flourLbl:"סה״כ קמח",
+   ing:"מצרכים",hint:"לחצו על מספר כדי לשנות אותו",method:"הכנה",notes:"הערות",
+   countLabel:function(u){return "מספר "+u;},unitLabel:function(u1){return "משקל "+u1;},
+   foot:'הביצה להברשה והשומשום אינם נכללים במשקל הבצק. חלמון בודד ≈ 18 גר\'.<br>משקל הבצק כולל פחת של 3% מעל משקל החלות/הלחמניות הרצוי.<br>שמירה במסך הבית: פתחו בספארי ← שיתוף ← הוספה למסך הבית.'},
+ en:{title:"Challah",
+   sub:"Enter any one number — flour, water, dough weight, how many loaves, or the weight of each — and the rest rescales to match. Volume measures are approximate; weigh if you can.",
+   type:"Type",regular:"Regular",vegan:"Vegan",fat:"Fat",pareve:"Pareve (oil)",dairy:"Dairy (butter)",flour:"Flour",shape:"Shape",braid:"Braid",loaf:"Braided loaf",rolls:"Rolls",strand:"-strand",
+   doughUnit:"oz",doughLbl:"Total dough — ",flourLbl:"Total flour",
+   ing:"Ingredients",hint:"tap any number to change it",method:"Method",notes:"Notes",
+   countLabel:function(u){return u.charAt(0).toUpperCase()+u.slice(1);},
+   unitLabel:function(u1){return "Weight per "+u1;},
+   foot:'Egg wash and sesame seeds are not counted in the dough weight. One large yolk ≈ 0.65 oz.<br>Total dough includes 3% extra for loss, above the weight of the loaves or rolls you want.<br>Salt is measured as fine sea or table salt — with Diamond Crystal kosher salt, double the spoon amount.<br>To keep this on your phone: open in Safari, tap Share, then Add to Home Screen.'}
+};
+
+function flourNote(){
+  var h=Math.round(hydration()), en=isEn();
+  if(flour==="mix") return en
+    ? "<b>Flour:</b> the two flours blend to about 14.4% protein at "+h+"% hydration."
+    : "<b>קמח:</b> שני הקמחים יחד נותנים כ־14.4% חלבון, בהידרציה של "+h+"%.";
+  if(flour==="strong") return en
+    ? "<b>Flour:</b> a single very strong flour (15.5% protein) takes a little more water — "+h+"% hydration — and develops faster. The crumb is chewier than with the two-flour blend."
+    : "<b>קמח:</b> קמח חזק אחד (15.5% חלבון) סופג מעט יותר מים — הידרציה "+h+"% — ומתפתח מהר יותר. החלה תצא לעיסה יותר מאשר בתערובת של שני קמחים.";
+  if(flour==="bread") return en
+    ? "<b>Flour:</b> US supermarket bread flour (King Arthur ~12.7% protein, Gold Medal ~12%) has less protein than the strong flours, so water starts at "+h+"% hydration. King Arthur absorbs a bit more than Gold Medal. Hold back a tablespoon or two and add it if the dough looks dry after a few minutes of kneading. The gluten is weaker, so check with a windowpane test (add a minute or two of kneading if it tears), shape gently, and watch the dough rather than the clock during the final proof so the loaves do not collapse. Expect slightly less volume."
+    : "<b>קמח:</b> קמח לחם מהסופר בישראל (כנראה כ־12–13% חלבון, עם תוספת גלוטן) סופג מעט פחות מהמניטובה, ולכן המים מתחילים בהידרציה של "+h+"%. שומרים כף או שתיים בצד ומוסיפים אם הבצק יבש אחרי כמה דקות לישה. כדאי לבדוק בבדיקת \"חלון\" (ואם הבצק נקרע, ללוש עוד דקה-שתיים), לקלוע בעדינות, ולעקוב אחרי הבצק ולא אחרי השעון בהתפחה האחרונה. המותגים שונים זה מזה, ולכן ההתאמה לפי המגע של הבצק.";
+  return en
+    ? "<b>Flour:</b> brioche flour (13.5% protein) absorbs less, so water is cut to "+h+"% hydration. If the dough feels dry after 3–4 minutes of kneading, add water a tablespoon at a time; if a ball flattens instead of holding its shape, there is too much."
+    : "<b>קמח:</b> קמח בריוש (13.5% חלבון) סופג פחות, ולכן המים מופחתים להידרציה של "+h+"%. אם הבצק נראה יבש אחרי 3–4 דקות לישה, מוסיפים מים בכף כל פעם; אם כדור משתטח ולא מחזיק צורה, יש יותר מדי מים.";
+}
+function fatNote(){
+  if(!dairy) return "";
+  var b=amt("butter"), wl=0.16*b, oilEq=BASE().butter/1.2*scale;
+  if(isEn()) return "<b>Butter:</b> "+WU(b)+" of unsalted butter replaces "+WU(oilEq)+" of oil (butter is about 82% fat and 16% water, so it is used at 1.2× the oil), and the water is reduced by "+
+    WU(wl)+" to make up for it. Butter goes in after the gluten has started to develop, not at the start. The crumb is richer and softer, the crust browns faster, so check the loaves 3–4 minutes early, and the bread stales a little sooner. This is a dairy challah. For a pareve one, use a pareve margarine in the same amount as the butter.";
+  return "<b>חמאה:</b> "+WU(b)+" חמאה לא מלוחה מחליפים "+WU(oilEq)+" שמן (חמאה היא כ־82% שומן ו־16% מים, ולכן משתמשים ב־1.2 מכמות השמן), והמים מופחתים ב־"+
+    (WU(wl))+" כדי לפצות. החמאה נכנסת אחרי שהגלוטן התחיל להתפתח ולא בהתחלה. הפרוסה עשירה ורכה יותר, הקרום מתכהה מהר יותר ולכן כדאי לבדוק את החלות 3–4 דקות מוקדם, והלחם מתייבש מעט מהר יותר. החלה חלבית. לגרסה פרווה אפשר להשתמש במרגרינה פרווה באותה כמות כמו החמאה.";
+}
+function notes(){
+  var oilSub=WU(0.8*yolkG());                 /* 80% of the yolk weight, as oil */
+  var oilTotal=WU(FLOURS[flour].base.oil*scale+0.8*yolkG());
+  var washTotal=washG();
+  var wh=Math.round(washTotal*0.3), ww=Math.round(washTotal*0.6), ws=Math.round(washTotal*0.1*2)/2;
+  if(isEn()){
+    return ["<b>No yolks?</b> Pick Vegan above, or leave them out and add 80% of their weight in oil instead — "+oilSub+
+      " more oil, for "+oilTotal+" total. The crumb comes out a little lighter in color and slightly softer.",
+      "<b>Egg-free wash:</b> brush with a mix of <b>30% malt syrup, 60% water, 10% salt</b> by weight. For this batch that is about "+
+      fmtOz(wh)+" oz malt syrup, "+fmtOz(ww)+" oz water and "+fmtOz(ws)+
+      " oz salt. Warm it slightly so the syrup dissolves, brush right before baking, and expect a glossy, deeper-brown crust.",
+      flourNote()];
+  }
+  return ["<b>אפשר בלי חלמונים:</b> בוחרים \"טבעונית\" למעלה, או משמיטים אותם ומוסיפים במקומם שמן ב־80% ממשקלם — עוד "+oilSub+
+    " שמן, כלומר "+oilTotal+" סה״כ. הבצק יוצא מעט בהיר יותר ורך במקצת.",
+    "<b>מריחה בלי ביצה:</b> תערובת של <b>30% מאלט סירופ, 60% מים, 10% מלח</b> לפי משקל. לכמות הזו: כ־"+
+    wh+" גר' מאלט סירופ, "+ww+" גר' מים ו־"+ws+" גר' מלח. מחממים מעט כדי שהסירופ יימס, מורחים רגע לפני הכניסה לתנור ומקבלים קרום מבריק וכהה יותר.",
+    flourNote()];
+}
+
+function render(){
+  var t=T[lang], en=isEn();
+  document.documentElement.lang=lang;
+  document.documentElement.dir=en?"ltr":"rtl";
+  document.body.className=en?"en":"";
+  var u = shape==="rolls" ? (en?"rolls":"לחמניות") : (en?"loaves":"חלות");
+  var u1 = shape==="rolls" ? (en?"roll":"לחמנייה") : (en?"loaf":"חלה");
+
+  Array.prototype.forEach.call(langSeg.children,function(b){
+    b.setAttribute("data-on",b.getAttribute("data-v")===lang?"1":"0"); });
+  Array.prototype.forEach.call(shapeSeg.children,function(b){
+    var v=b.getAttribute("data-v");
+    b.textContent = v==="rolls"?t.rolls:t.loaf;
+    b.setAttribute("data-on",v===shape?"1":"0"); });
+
+  document.getElementById("h1").textContent=t.title;
+  document.getElementById("sub").textContent=t.sub;
+  document.getElementById("shapeLbl").textContent=t.shape;
+  document.getElementById("flourSegLbl").textContent=t.flour;
+  document.getElementById("veganLbl").textContent=t.type;
+  document.getElementById("fatLbl").textContent=t.fat;
+  Array.prototype.forEach.call(fatSeg.children,function(b){
+    var v=b.getAttribute("data-v")==="true";
+    b.textContent=v?t.dairy:t.pareve; b.setAttribute("data-on",v===dairy?"1":"0"); });
+  Array.prototype.forEach.call(veganSeg.children,function(b){
+    var v=b.getAttribute("data-v")==="true";
+    b.textContent=v?t.vegan:t.regular; b.setAttribute("data-on",v===vegan?"1":"0"); });
+  Array.prototype.forEach.call(flourSeg.children,function(b){
+    var v=b.getAttribute("data-v");
+    b.textContent=FLOURS[v][lang];
+    b.setAttribute("data-on",v===flour?"1":"0"); });
+  document.getElementById("ingHead").textContent=t.ing;
+  document.getElementById("ingHint").textContent=t.hint;
+  document.getElementById("methodHead").textContent=t.method;
+  document.getElementById("notesHead").textContent=t.notes;
+  document.getElementById("foot").innerHTML=t.foot;
+  document.getElementById("unitTopUnit").textContent=en?"oz":"גר'";
+  document.getElementById("flourLbl").textContent=t.flourLbl;
+  document.getElementById("topUnit").textContent=u;
+  document.getElementById("countUnit").textContent=u;
+  document.getElementById("doughUnit").textContent=en?"oz":"גר'";
+  document.getElementById("countLabel").textContent=t.countLabel(u);
+  document.getElementById("doughLabel").textContent=en?"Total dough":"משקל הבצק";
+
+  ROWS().forEach(function(r){
+    set("i_"+r.k,W(amt(r.k)));
+    var n=document.getElementById("n_"+r.k); if(n) n.textContent=volText(r,amt(r.k));
+  });
+  set("doughInput",W(dough()));
+  set("countInput",String(loaves()));
+  set("countTop",String(loaves()));
+  set("unitTop",String(unitW));
+  document.getElementById("flourNum").textContent=WU(flourG());
+  var diff = en ? Math.abs(actualG()/OZ-unitW)>0.1 : Math.abs(actualG()-unitW)>2;
+  document.getElementById("unitTopLbl").textContent = en
+    ? "Weight per "+u1+(diff?" — actually "+fmtOz(actualG())+" oz":"")
+    : "משקל "+u1+(diff?" — בפועל "+fmtG(actualG())+" גר'":"");
+  document.getElementById("doughNote").textContent = en?lbText(dough()):"";
+  document.getElementById("countLbl").textContent = en
+    ? "How many you get" : "מספר "+u;
+
+  var di=document.getElementById("unitTop"), ci=document.getElementById("countTop");
+  di.style.width=Math.max(4,di.value.length+1.2)+"ch";
+  ci.style.width=Math.max(3,ci.value.length+1.2)+"ch";
+
+  var wr=document.getElementById("washRows");
+  wr.innerHTML='<div class="sub-head">'+(en?"For the wash":"למריחה")+'</div>'+washRows().map(function(r){
+    return '<div class="row"><span class="label">'+r[0]+(r[3]?'<small>'+r[3]+'</small>':'')+'</span>'+
+      (r[1]?'<span class="inp" style="border-color:transparent;background:none">'+r[1]+'</span><span class="unit">'+r[2]+'</span>':'')+'</div>';
+  }).join("");
+  var ol=document.getElementById("steps"); ol.innerHTML="";
+  steps().forEach(function(s){ var li=document.createElement("li"); li.innerHTML=s; ol.appendChild(li); });
+  var nt=notes();
+  document.getElementById("noteWash").innerHTML=nt[1];
+  document.getElementById("noteWash").style.display=vegan?"none":"";
+  document.getElementById("noteFlour").innerHTML=nt[2];
+  document.getElementById("noteFat").innerHTML=fatNote();
+  document.getElementById("noteFat").style.display=dairy?"":"none";
+}
+
+if(isEn()) unitW=21.25;
+buildRows();
+render();
+<\/script>
+</body>
+</html></script>
+<script>
+const CATS=[["לחמים ובצקים","Breads & doughs"],["דגים נאים","Raw fish"],["סלטים, ירקות וקטניות","Salads, vegetables & legumes"],["מרקים","Soups"],["פסטה, ניוקי ודגנים","Pasta, gnocchi & grains"],["רטבים","Sauces"],["בשר","Meat"],["עוף","Chicken"]];
+/* ingredient: "qty|unit|hebrew|english"  qty "" = not scaled, "a-b" = range; unit g kg ml l cup tbsp tsp pc (count) or "" (none)
+   english for pc: "singular/plural".  step tokens {amount:unit} scale with the recipe. */
+const R=[
+{id:"challah",c:0,he:"בצק לחלה",en:"Challah",calc:true,ing:["550|g|קמח מניטובה|strong flour","250|g|קמח חלה|challah flour","350|ml|מים|water","58|g|שמן|oil","40|g|דבש|honey","48|g|סוכר|sugar","2|pc|חלמונים|egg yolk/egg yolks","17|g|מלח|salt","14|g|שמרים יבשים|dry yeast","1|pc|ביצה|egg/eggs","||שומשום|sesame seeds"],st:[]},
+
+/* ---------------- raw fish ---------------- */
+{id:"sashimi",c:1,he:"סשימי דג ים בסלסה ערבית",en:"Fish Sashimi with Arab Salsa",y:[4,"סועדים","servings"],ing:[
+"280|g|פילה פלמידה לבנה או אינטיאס, נקי לחלוטין מעור, אידרה וקוצים|white bonito (palamida) or amberjack fillet, completely free of skin, bloodline and pin bones",
+"1|pc|עגבניה בלאדי (עם הכפלים) בינונית|medium heirloom (baladi) tomato/medium heirloom (baladi) tomatoes",
+"1|pc|מלפפון קטן|small cucumber/small cucumbers",
+"0.25|cup|תערובת נענע ופטרוזיליה קצוצים דק מאוד|mint and parsley, very finely chopped",
+"4|tbsp|שמן זית באיכות גבוהה|high-quality olive oil",
+"2|tbsp|מיץ לימון|lemon juice",
+"||מעט מלח אטלנטי|a little flaky sea salt"],st:[
+["פורסים את פילה הדג לפרוסות רחבות בעובי של כחצי ס\"מ, ומסדרים 3 פרוסות על כל צלחת.","Slice the fish into wide slices about ¼ inch (½ cm) thick and arrange 3 slices on each plate."],
+["מזלפים על הדג מעט משמן הזית ובוזקים מעט מלח.","Drizzle the fish with a little of the olive oil and sprinkle with a little salt."],
+["קוצצים בסבלנות את המלפפון והעגבניה דק מאוד לקוביות בגודל של כ-2*2 מ\"מ (כן, 2 מילימטר) ומעבירים לקערת עבודה.","Patiently dice the cucumber and tomato very finely, into cubes about 2×2 mm (yes, 2 millimeters, about 1/16 inch), and move them to a mixing bowl."],
+["מוסיפים לקערה את תערובת עשבי התיבול, מעט שמן זית, מעט מלח ואת מיץ הלימון, מערבבים, טועמים ומוסיפים מכל דבר לפי הצורך. הטעם צריך להיות מעט חמוץ.","Add the herbs, a little olive oil, a little salt and the lemon juice. Mix, taste and adjust each as needed. It should taste slightly sour."],
+["על כל פרוסת דג שמונחת על הצלחת עורמים \"פירמידה\" קטנה מהסלט, ומניחים עלה פטרוזיליה שלם לקישוט.","Pile a small \"pyramid\" of the salsa on each slice of fish and garnish with a whole parsley leaf."]]},
+
+{id:"ceviche",c:1,he:"סביצ'ה מוסר ים עם תפוחים וקולורבי",en:"Sea Bass Ceviche with Apple and Kohlrabi",y:[4,"סועדים","servings"],ing:[
+"280|g|פילה מוסר ים (אם אין, אפשר מוסר אורגני), נקי לחלוטין מעור, אידרה וקוצים|sea bass fillet (or farmed sea bass), completely free of skin, bloodline and pin bones",
+"1|pc|תפוח ירוק מסוג גרני סמית|Granny Smith apple/Granny Smith apples",
+"1|pc|קולורבי בינוני|medium kohlrabi/medium kohlrabi",
+"1|pc|צרור קטן כוסברה, קצוצה דק|small bunch cilantro, finely chopped/small bunches cilantro, finely chopped",
+"4-8|pc|פרוסות דקות מאוד של פלפל אדום חריף|very thin slice of hot red chili/very thin slices of hot red chili",
+"3|tbsp|שמן זית באיכות גבוהה|high-quality olive oil",
+"1|pc|לימון, סחוט|lemon, juiced/lemons, juiced",
+"||מעט מלח אטלנטי|a little flaky sea salt"],st:[
+["חותכים את פילה הדג לקוביות בגודל של 1*1 ס\"מ ושמים בקערת עבודה.","Cut the fish into ⅜-inch (1 cm) cubes and put them in a mixing bowl."],
+["מזלפים על הדג 3/4 מכמות מיץ הלימון ומערבבים.","Pour ¾ of the lemon juice over the fish and mix."],
+["חותכים את התפוח (עם הקליפה) והקולורבי לקוביות בגודל שווה לקוביות הדג ושמים בקערה נפרדת.","Cut the apple (unpeeled) and the kohlrabi into cubes the same size as the fish and put them in a separate bowl."],
+["מוסיפים לקערה את הכוסברה הקצוצה, {2:tbsp} משמן הזית, מעט מלח ואת מיץ הלימון שנותר. מערבבים, טועמים ומוסיפים מכל דבר לפי הצורך. הטעם צריך להיות מעט יותר מלוח מהרגיל משום שלא הוספנו מלח לדג.","Add the chopped cilantro, {2:tbsp} of the olive oil, a little salt and the rest of the lemon juice. Mix, taste and adjust. It should be a little saltier than usual, since the fish itself was not salted."],
+["מאחדים את תערובת הדג עם תערובת התפוח והקולורבי, מתקנים תיבול.","Combine the fish with the apple and kohlrabi and adjust the seasoning."],
+["מסדרים על צלחות שטוחות וגדולות את התערובת בערימה במרכז הצלחת.","Mound the mixture in the center of large flat plates."],
+["מניחים על כל ערימה פרוסה או שתיים של פלפל חריף.","Top each mound with a slice or two of chili."],
+["מזלפים את שמן הזית שנותר ומגישים.","Drizzle with the remaining olive oil and serve."]]},
+
+{id:"carpaccio",c:1,he:"קרפצ'יו פלמידה אדומה במיץ תפוזים ואגוזי מלך",en:"Red Bonito Carpaccio with Orange Juice and Walnuts",y:[4,"צלחות","plates"],ing:[
+"280|g|פילה פלמידה אדומה, נקי לחלוטין מעור, אידרה, קוצים ומהחלק הכהה של בשר הדג|red bonito (palamida) fillet, free of skin, bloodline, pin bones and the dark meat",
+"1|pc|צרור קטן כוסברה, העלים מופרדים מהגבעולים|small bunch cilantro, leaves picked/small bunches cilantro, leaves picked",
+"0.25|cup|אגוזי מלך קלויים ומרוסקים|toasted walnuts, crushed",
+"1.5|tbsp|שמן זית באיכות גבוהה|high-quality olive oil",
+"1|pc|תפוז, סחוט|orange, juiced/oranges, juiced",
+"||מעט מלח אטלנטי|a little flaky sea salt",
+"||מעט פלפל שחור גרוס דק|a little finely ground black pepper"],st:[
+["חותכים את פילה הדג לפרוסות דקות ורחבות ככל שניתן.","Slice the fish as thin and wide as you can."],
+["מסדרים על צלחות שטוחות את פרוסות הדג.","Lay the slices out on flat plates."],
+["מזלפים על פרוסות הדג את שמן הזית ומיץ התפוזים.","Drizzle with the olive oil and orange juice."],
+["בוזקים מלח ופלפל על הדג.","Season with salt and pepper."],
+["מפזרים את אגוזי המלך והכוסברה.","Scatter the walnuts and cilantro over the top."]]},
+
+{id:"sardines",c:1,he:"סלט סרדינים ועלים ירוקים",en:"Sardine and Green Leaf Salad",ing:[
+"8|pc|סרדינים טריים, מופרדים לפילטים ומנוקים מעצמות|fresh sardine, filleted and boned/fresh sardines, filleted and boned",
+"1|pc|צרור קטן עלי ראשד|small bunch garden cress/small bunches garden cress",
+"1|pc|חבילה קטנה עלי רוקט טריים|small pack fresh arugula/small packs fresh arugula",
+"1|pc|צרור קטן פטרוזיליה|small bunch parsley/small bunches parsley",
+"2|pc|ענפי בזיליקום|basil sprig/basil sprigs",
+"3|tbsp|שמן זית באיכות גבוהה|high-quality olive oil",
+"1|pc|לימון, סחוט|lemon, juiced/lemons, juiced",
+"||מעט מלח אטלנטי|a little flaky sea salt"],st:[
+["שמים את כל העלים והדגים בקערת עבודה.","Put all the leaves and the fish in a mixing bowl."],
+["מתבלים את התערובת בחצי מכמות השמן, הלימון והמלח.","Dress with half of the oil, lemon juice and salt."],
+["מערבבים היטב ומסדרים בצלחות קטנות ועמוקות.","Toss well and arrange in small, deep plates."],
+["מזלפים על כל צלחת משמן הזית שנותר.","Drizzle each plate with the remaining olive oil."],
+["ניתן להגיש עם טוסטים קטנים.","Serve with small toasts if you like."]]},
+
+{id:"palamida",c:1,he:"פלמידה לבנה במרק תפוזים",en:"White Bonito in Orange Broth",y:[4,"צלחות","plates"],ing:[
+"400|g|פילה פלמידה לבנה, ללא עצמות/קוצים כלל וללא העור|white bonito (palamida) fillet, skinless and completely boneless",
+"0.5|cup|נענע קצוצה|chopped mint",
+"350|ml|מיץ מתפוזים טריים|fresh orange juice",
+"50|ml|מיץ מלימונים טריים|fresh lemon juice",
+"15|ml|ארק|arak",
+"2|pc|בצלי שאלוט קצוצים|shallot, chopped/shallots, chopped",
+"40|ml|שמן זית|olive oil",
+"||מעט מלח אטלנטי|a little flaky sea salt"],st:[
+["חותכים את פילה הדג לקוביות של 2*2 ס\"מ, מסדרים בצלחות עמוקות ובוזקים מלח אטלנטי.","Cut the fish into ¾-inch (2 cm) cubes, divide among deep plates and sprinkle with sea salt."],
+["מערבבים היטב את מיץ התפוזים, מיץ הלימון והארק ומוזגים על הדגים עד לכיסוי כמעט מלא.","Mix the orange juice, lemon juice and arak and pour over the fish until it is almost covered."],
+["בקערת ערבוב מערבבים את הבצל והנענע ומתבלים במלח אטלנטי, שמן זית ומעט מיץ לימון. מסדרים את הסלט מעל הדגים.","In a bowl, mix the shallots and mint and season with sea salt, olive oil and a little lemon juice. Spoon over the fish."],
+["זולפים מעט שמן זית על כל צלחת ומגישים.","Drizzle a little olive oil over each plate and serve."]]},
+
+/* ---------------- salads, vegetables, legumes ---------------- */
+{id:"fattoush",c:2,he:"סלט פאטוש",en:"Fattoush Salad",ing:[
+"6|pc|עגבניות אדומות אבל קצת קשות, חתוכות לחצאי פלחים|red but slightly firm tomato, cut into half-wedges/red but slightly firm tomatoes, cut into half-wedges",
+"1|pc|בצל לבן בינוני, פרוס לרבעי טבעות דקות מאוד|medium white onion, sliced into very thin quarter-rings/medium white onions, sliced into very thin quarter-rings",
+"2|pc|פיתות, אפשר לא טריות|pita, day-old is fine/pitas, day-old is fine",
+"0.33|cup|עלי זעתר טרי|fresh za'atar (hyssop) leaves",
+"0.5|pc|לימון, סחוט|lemon, juiced/lemons, juiced",
+"3|tbsp|שמן זית|olive oil",
+"1|tbsp|סומאק טרי|fresh sumac",
+"||מעט מלח גס|a little coarse salt"],st:[
+["קורעים את הפיתות לחתיכות בגודל של כ-3*3 ס\"מ, מסדרים על תבנית תנור, מזלפים {1:tbsp} שמן זית ומכניסים לכחצי שעה לתנור שחומם מראש ל-130 מעלות, עד שהפיתות יבשות לגמרי. מוציאים ומקררים.","Tear the pitas into pieces about 1¼ inches (3 cm) square, spread on a baking sheet, drizzle with {1:tbsp} olive oil and bake about 30 minutes in an oven preheated to 265°F (130°C), until completely dry. Let cool."],
+["בקערת ערבוב שמים את הבצל הפרוס והסומאק ומערבבים היטב.","In a mixing bowl, toss the sliced onion with the sumac."],
+["מוסיפים עגבניות, פיתות, זעתר, מיץ לימון, {2:tbsp} שמן זית ומלח. מערבבים היטב, טועמים ומתקנים תיבול.","Add the tomatoes, pita, za'atar, lemon juice, {2:tbsp} olive oil and salt. Toss well, taste and adjust."]]},
+
+{id:"eggplant",c:2,he:"סטייק חציל בחמאת לימון ונענע",en:"Eggplant Steak in Lemon-Mint Butter",ing:[
+"1|pc|חציל בלאדי טרי מאוד בגודל בינוני|very fresh medium baladi eggplant/very fresh medium baladi eggplants",
+"3|tbsp|שמן זית|olive oil",
+"||מעט נענע טריה|a little fresh mint",
+"30|g|חמאה|butter",
+"3|tbsp|מיץ לימון טרי|fresh lemon juice"],st:[
+["חותכים את החציל מסביב כך שתישאר קוביה גדולה של בשר החציל ללא קליפה. מורחים את שמן הזית על החציל וממליחים.","Trim the eggplant all around so you are left with one large block of flesh, no skin. Rub with the olive oil and salt it."],
+["צורבים במחבת חמה מכל הצדדים עד להשחמה ומעבירים על תבנית לתנור שחומם מראש ל-180 מעלות לכ-5-6 דקות.","Sear in a hot pan on all sides until browned, then move to a baking sheet in an oven preheated to 350°F (180°C) for about 5–6 minutes."],
+["בזמן שהחציל בתנור ממיסים את החמאה במחבת קטנה על אש נמוכה, מוסיפים את מיץ הלימון ומערבבים היטב. מכבים את האש ומוסיפים את הנענע.","While the eggplant is in the oven, melt the butter in a small pan over low heat, add the lemon juice and stir well. Turn off the heat and add the mint."],
+["מוציאים את החציל מהתנור ומעבירים לצלחת, פורסים לפרוסות בעובי של 2 ס\"מ ויוצקים מעל את החמאה.","Move the eggplant to a plate, slice ¾ inch (2 cm) thick and pour the butter over it."]]},
+
+{id:"falafel",c:2,he:"פלאפל",en:"Falafel",ing:[
+"500|g|גרגרי חומוס בולגרי שהושרו במים פושרים 24 שעות|Bulgarian chickpeas, soaked 24 hours in lukewarm water",
+"1|pc|צרור פטרוזיליה, עלים בלבד|bunch parsley, leaves only/bunches parsley, leaves only",
+"1|pc|צרור כוסברה, עלים בלבד|bunch cilantro, leaves only/bunches cilantro, leaves only",
+"0.5|pc|צרור נענע, עלים בלבד|bunch mint, leaves only/bunches mint, leaves only",
+"1|pc|בצל בינוני פרוס גס|medium onion, roughly sliced/medium onions, roughly sliced",
+"8|pc|שיני שום|garlic clove/garlic cloves",
+"20|g|כמון|ground cumin",
+"15|g|כוסברה יבשה|ground coriander",
+"25|g|מלח גס|coarse salt",
+"1.5|tsp|סודה לשתייה|baking soda",
+"2.5|l|שמן לטיגון|oil for frying"],st:[
+["בקערה מערבבים את גרגרי החומוס, עשבי התיבול, הבצל והשום, וטוחנים פעם אחת טחינה דקה במטחנת בשר.","Mix the chickpeas, herbs, onion and garlic and pass them once through a meat grinder on the fine plate."],
+["מוסיפים לתערובת את התבלינים, המלח והסודה לשתייה ומערבבים היטב. התערובת צריכה להיות רכה; מוסיפים מעט מים אם צריך.","Add the spices, salt and baking soda and mix well. The mixture should be soft; add a little water if needed."],
+["מחממים את השמן לחום בינוני בסיר, מגלגלים מהתערובת כדורים ומטגנים 3-5 דק' עד שהכדורים שחומים מאוד.","Heat the oil over medium heat in a pot, roll the mixture into balls and fry 3–5 minutes, until very deep brown."]]},
+
+{id:"hummus",c:2,he:"חומוס",en:"Hummus",ing:[
+"350|g|גרגרי חומוס בולגרי שהושרו במים פושרים 24 שעות|Bulgarian chickpeas, soaked 24 hours in lukewarm water",
+"0.5|pc|בצל בינוני פרוס גס|medium onion, roughly sliced/medium onions, roughly sliced",
+"4|pc|שיני שום|garlic clove/garlic cloves",
+"0.5|pc|לימון, סחוט|lemon, juiced/lemons, juiced",
+"1.5|cup|טחינה גולמית|raw tahini",
+"3|pc|קוביות קרח קטנות|small ice cube/small ice cubes",
+"1.5|tbsp|שמן זית|olive oil",
+"2|tsp|כמון|ground cumin",
+"2|tsp|מלח דק|fine salt",
+"1.5|tsp|סודה לשתייה|baking soda"],st:[
+["מסננים את החומוס ומעבירים לסיר רחב, מוסיפים את הסודה לשתייה ומניחים על אש גבוהה. מערבבים עד שהקליפות נפרדות מהגרגרים.","Drain the chickpeas into a wide pot, add the baking soda and set over high heat. Stir until the skins start to come away."],
+["מוזגים לסיר כ-{2.5:l} מים רותחים, מוסיפים את הבצל והשום ומנמיכים את האש.","Pour in about {2.5:l} boiling water, add the onion and garlic and lower the heat."],
+["בעזרת כף רשת משפשפים את הגרגרים כך שהקליפות יידבקו לכף וזורקים אותן. חוזרים על הפעולה עד שכבר לא נדבקות קליפות לכף.","With a mesh skimmer, rub the chickpeas so the skins cling to it, and discard them. Repeat until no more skins come up."],
+["ממשיכים לבשל כ-40 דקות עד שהגרגרים רכים ללא גושים. מסננים (שומרים את המים) ומעבירים למעבד מזון יחד עם הבצל והשום.","Keep simmering about 40 minutes, until completely soft. Drain, saving the cooking water, and move to a food processor with the onion and garlic."],
+["מפעילים את המעבד במהירות גבוהה עד שנוצרת עיסה חלקה, מוסיפים את הטחינה ומיד אחריה את הקרח. לאחר שמתאחד מוסיפים כמון, מלח, מיץ לימון, שמן זית וכ-{70-100:ml} ממי הבישול.","Process on high until smooth, add the tahini and then immediately the ice. Once it comes together, add the cumin, salt, lemon juice, olive oil and about {70-100:ml} of the cooking water."],
+["טועמים, מתקנים תיבול ומעבירים למקרר.","Taste, adjust and refrigerate."]]},
+
+/* ---------------- soups ---------------- */
+{id:"krupnik",c:3,he:"מרק גריסים ופטריות – קרופניק",en:"Barley and Mushroom Soup (Krupnik)",ing:[
+"50|g|חמאה בגוש|butter, in one piece",
+"30|g|חמאה חתוכה לקוביות|butter, cubed",
+"500|g|פטריות פורטובלו פרוסות דק מאוד|portobello mushrooms, very thinly sliced",
+"1|pc|כרישה קצוצה דק|leek, finely chopped/leeks, finely chopped",
+"1|pc|בצל בינוני קצוץ דק|medium onion, finely chopped/medium onions, finely chopped",
+"0.25|cup|יין לבן|white wine",
+"4|pc|עלי מרווה|sage leaf/sage leaves",
+"2|pc|גזרים בינוניים חתוכים לקוביות של 1 ס\"מ|medium carrot, in ⅜-inch dice/medium carrots, in ⅜-inch dice",
+"2|pc|תפוחי אדמה בינוניים חתוכים לקוביות של 1 ס\"מ|medium potato, in ⅜-inch dice/medium potatoes, in ⅜-inch dice",
+"1|cup|גריסי פנינה, שטופים ומושרים במים חצי שעה|pearl barley, rinsed and soaked 30 minutes"],st:[
+["בסיר בינוני ממיסים את גוש החמאה (את הקוביות שומרים במקרר בינתיים), מוסיפים כרישה ובצל ומאדים עם מעט מלח על אש בינונית כ-10 דק'.","In a medium pot, melt the block of butter (keep the cubes in the fridge for now). Add the leek and onion with a little salt and sweat over medium heat about 10 minutes."],
+["מוסיפים את הפטריות הפרוסות עם מעט מלח וממשיכים לאדות עד שאין נוזלים בכלל בסיר.","Add the mushrooms with a little salt and cook until there is no liquid left in the pot."],
+["מוסיפים את היין ומגבירים את האש, מערבבים בתכיפות עד ששוב אין נוזלים בסיר ומנמיכים את האש.","Add the wine and raise the heat, stirring often until the pot is dry again, then lower the heat."],
+["מוסיפים את עלי המרווה, מאדים תוך ערבוב 2-3 דקות ומוסיפים את הגזר ותפוחי האדמה עם מעט מלח.","Add the sage and cook, stirring, 2–3 minutes. Add the carrots and potatoes with a little salt."],
+["מסננים את הגריסים ומוסיפים לסיר, מערבבים היטב, מוסיפים {2:l} מים ומגבירים את האש.","Drain the barley, add it to the pot and stir well. Add {2:l} water and raise the heat."],
+["מביאים לרתיחה, מנמיכים את האש למינימום, מכסים ומבשלים כ-45 דקות. מדי כמה דקות מערבבים כדי שהגריסים לא יידבקו לתחתית.","Bring to a boil, turn the heat to the lowest setting, cover and cook about 45 minutes, stirring every few minutes so the barley does not stick."],
+["מוסיפים את קוביות החמאה מהמקרר ומערבבים עד שהחמאה מתאחדת עם המרק.","Stir in the cold butter cubes until they melt into the soup."],
+["טועמים ומוסיפים מלח אם צריך.","Taste and add salt if needed."]]},
+
+{id:"kneidlach",c:3,he:"קניידלאך",en:"Kneidlach (Matzo Balls)",ing:[
+"1.25|cup|קמח מצה|matzo meal",
+"1.5|tsp|מלח דק|fine salt",
+"1|pc|תפוח אדמה בינוני|medium potato/medium potatoes",
+"3|pc|ביצים|egg/eggs",
+"1|cup|מים חמימים|warm water",
+"1|tsp|פלפל שחור גרוס|ground black pepper",
+"0.5|cup|שמן|oil"],st:[
+["קולפים את תפוח האדמה ומבשלים במים מומלחים כחצי שעה עד ריכוך מלא.","Peel the potato and boil in salted water about 30 minutes, until completely soft."],
+["מסננים ומועכים לפירה, מחכים שיתקרר מעט, מוסיפים את הביצים וטורפים היטב.","Drain and mash, let it cool a little, then add the eggs and beat well."],
+["מוסיפים את כל שאר המרכיבים, לשים היטב, מכסים ומניחים במקרר לשעה.","Add all the remaining ingredients, mix well, cover and refrigerate for 1 hour."],
+["מרתיחים על אש גבוהה סיר עם מים מומלחים או מרק. בידיים רטובות מגלגלים כדורים קטנים, זורקים מיד למים הרותחים ומבשלים 10 דקות.","Bring a pot of salted water or soup to a boil over high heat. With wet hands, roll small balls, drop them straight into the boiling liquid and cook 10 minutes."]]},
+
+{id:"ramen",c:3,he:"שויו ראמן כשר",en:"Kosher Shoyu Ramen",y:[5,"מנות","bowls"],ing:[
+"## טארה|Tare",
+"1.25|cup|רוטב סויה באיכות גבוהה|high-quality soy sauce",
+"1.25|cup|מירין עם אלכוהול|mirin (with alcohol)",
+"0.5|cup|סאקה|sake",
+"1.5|cup|מים|water",
+"40|g|סוכר|sugar",
+"3|pc|שיני שום|garlic clove/garlic cloves",
+"1|pc|שורש ג'ינג'ר פרוס דק|piece of ginger, thinly sliced/pieces of ginger, thinly sliced",
+"3|pc|בצל ירוק, החלק הלבן בלבד|scallion, white part only/scallions, white part only",
+"## ציר דאשי|Dashi",
+"2.5|l|ציר עוף|chicken stock",
+"30|g|אצת קומבו|kombu",
+"20|g|קצובושי (שבבי בוניטו)|katsuobushi (bonito flakes)",
+"10|pc|פטריות שיטאקה מיובשות|dried shiitake mushroom/dried shiitake mushrooms",
+"## אטריות ראמן|Ramen noodles",
+"600|g|קמח עם תכולת גלוטן גבוהה|high-gluten flour",
+"9|g|אבקת קנסוי (או סודה לשתייה אפויה: אופים סודה לשתייה על נייר אפייה כשעה ב-120 מעלות, מקררים ושומרים בצנצנת סגורה; עובדים עם כפפות)|kansui powder (or baked baking soda: bake baking soda on parchment about 1 hour at 250°F/120°C, cool and keep in a closed jar; wear gloves)",
+"6|g|מלח דק|fine salt",
+"230|ml|מים|water",
+"## צ'אשו בקר|Beef chashu",
+"750|g|אונטריב חתוך ל-3 קוביות גדולות|beef chuck rib (untrib), cut into 3 large blocks",
+"||כל כמות הטארה (מצטמצמת במהלך בישול הבשר)|all of the tare (it reduces as the beef cooks)",
+"## ניטאמאגו (ביצים כבושות)|Nitamago (marinated eggs)",
+"3|pc|ביצים טריות ומקוררות בגודל L|large egg, fresh and cold/large eggs, fresh and cold",
+"1|l|מים|water",
+"0.5|cup|טארה|tare",
+"## שיטאקה מוקפצות|Stir-fried shiitake",
+"||פטריות השיטאקה שבושלו בציר, פרוסות לעובי חצי ס\"מ|the shiitake cooked in the stock, sliced ¼ inch thick",
+"||השומן שקיפינו מהטארה|the fat skimmed from the tare",
+"## להרכבת כל קערה|For each bowl",
+"||מנה אחת של אטריות ראמן|one portion of ramen noodles",
+"||לפחות 2 ליטר מים לבישול האטריות|at least 2 quarts water for the noodles",
+"||80 מ\"ל טארה חם|⅓ cup (80 ml) hot tare",
+"||300 מ\"ל ציר דאשי חם|1¼ cups (300 ml) hot dashi",
+"||3 פרוסות צ'אשו בקר|3 slices beef chashu",
+"||חצי ביצת ניטאמאגו|½ nitamago egg",
+"||חופן פטריות שיטאקה מוקפצות|a handful of stir-fried shiitake",
+"||2 יריעות נורי בגודל 10*10 ס\"מ|2 sheets nori, 4×4 inches",
+"||חופן בצל ירוק פרוס דק, רק החלק הירוק|a handful of thinly sliced scallion greens",
+"||כפית שומשום קלוי|1 tsp toasted sesame seeds",
+"||כפית שומן בקר מזוקק (לא חובה)|1 tsp rendered beef fat (optional)",
+"||מלח גס|coarse salt"],st:[
+"## טארה|Tare",
+["שמים את כל המרכיבים בסיר קטן, מביאים לרתיחה ומבשלים 40 דקות על אש נמוכה ללא מכסה.","Put all the ingredients in a small pot, bring to a boil and simmer 40 minutes uncovered over low heat."],
+["מסירים מהאש ומסננים במסננת דקה.","Take off the heat and strain through a fine sieve."],
+"## ציר דאשי|Dashi",
+["מרתיחים את ציר העוף בסיר בינוני ומעבירים לאש בינונית.","Bring the chicken stock to a boil in a medium pot, then lower to medium heat."],
+["מוסיפים לציר הרותח את הקומבו ופטריות השיטאקה, מבשלים 10 דקות ומוציאים בכף מחוררת. שומרים את הפטריות להמשך.","Add the kombu and shiitake, simmer 10 minutes and lift them out with a slotted spoon. Keep the mushrooms for later."],
+["שמים את הקצובושי במסננת דקה, מניחים את המסננת בתוך הציר הרותח ל-5 דקות ומוציאים.","Put the katsuobushi in a fine sieve, set the sieve in the simmering stock for 5 minutes, then lift it out."],
+["מסננים את הציר.","Strain the stock."],
+"## אטריות|Noodles",
+["שמים את כל המרכיבים למעט המים במיקסר עם וו לישה ומפעילים במהירות נמוכה.","Put everything except the water in a stand mixer with the dough hook and run on low."],
+["מוסיפים את המים בזרם דק וממשיכים ללוש במהירות נמוכה 10 דקות. אמור להתקבל בצק מפורר.","Add the water in a thin stream and knead on low for 10 minutes. The dough will be crumbly."],
+["מעבירים למשטח עבודה, מאחדים לגוש אחד ולשים 5 דקות נוספות. עוטפים היטב בניילון נצמד ומעבירים למקרר לשעתיים לפחות.","Turn out onto the counter, press into one mass and knead 5 more minutes. Wrap tightly in plastic and refrigerate at least 2 hours."],
+["מוציאים מהמקרר ומחלקים למנות של {150:g}.","Take out of the fridge and divide into {150:g} portions."],
+["מרדדים כל מנה במכונת פסטה עד דרגה 6 וחותכים לספגטי.","Roll each portion through a pasta machine up to setting 6 and cut into spaghetti."],
+["מכסים את המנות במגבת ושומרים במקום קריר.","Cover with a towel and keep somewhere cool."],
+"## צ'אשו|Chashu",
+["בסיר קטן מרתיחים את הטארה, מוסיפים את קוביות הבשר, מביאים לרתיחה ומעבירים לאש נמוכה.","Bring the tare to a boil in a small pot, add the beef, return to a boil and lower the heat."],
+["מבשלים עם מכסה כשעתיים וחצי, עד שהבשר רך אך לא מתפרק.","Cover and simmer about 2½ hours, until tender but not falling apart."],
+["מוציאים את הבשר, ולאחר שהתקרר מעט עוטפים כל קוביה בניילון נצמד ומעבירים למקרר ל-4 שעות לפחות.","Take out the beef, let it cool a little, wrap each block in plastic and refrigerate at least 4 hours."],
+["מקפים ומסננים את הטארה במסננת דקה ומעבירים למקרר ל-3 שעות לפחות. את השומן שקיפינו שומרים בנפרד.","Skim and strain the tare through a fine sieve and refrigerate at least 3 hours. Keep the skimmed fat separately."],
+["פורסים את הבשר נגד כיוון הסיבים לפרוסות בעובי חצי ס\"מ.","Slice the beef against the grain, ¼ inch (½ cm) thick."],
+"## ניטאמאגו|Nitamago",
+["מרתיחים את המים בסיר קטן על אש גבוהה ומניחים בזהירות את הביצים במים.","Bring the water to a boil in a small pot over high heat and gently lower in the eggs."],
+["מבשלים על אש גבוהה 9 דקות.","Boil over high heat for 9 minutes."],
+["מעבירים את הסיר לכיור תחת זרם מים קרים ומקלפים בזהירות.","Put the pot under cold running water and peel the eggs carefully."],
+["מניחים את הביצים בקערה קטנה ומוזגים עליהן את הטארה.","Put the eggs in a small bowl and pour the tare over them."],
+["מקררים לשעה לפחות.","Refrigerate at least 1 hour."],
+["חוצים את הביצים הקרות לאורך.","Halve the cold eggs lengthwise."],
+"## שיטאקה מוקפץ|Stir-fried shiitake",
+["מחממים את השומן במחבת על אש גבוהה.","Heat the fat in a pan over high heat."],
+["מוסיפים את הפטריות ומאדים על אש גבוהה תוך ערבוב והקפצה כ-5 דקות, עד שהן משחימות.","Add the mushrooms and stir-fry over high heat about 5 minutes, until browned."],
+"## הרכבת הקערה|Assembling a bowl",
+["בסיר גדול מרתיחים את המים ומוסיפים 2 כפות מלח גס. מבשלים את מנת האטריות 2 דקות ומעבירים לקערת מרק גדולה.","Boil the water in a large pot with 2 Tbsp coarse salt. Cook the noodles 2 minutes and move them to a large soup bowl."],
+["מוזגים על האטריות את הטארה ואת הדאשי.","Pour the tare and the dashi over the noodles."],
+["מסדרים מסביב לאטריות צ'אשו, ניטאמאגו, פטריות שיטאקה ואצות נורי.","Arrange the chashu, egg, shiitake and nori around the noodles."],
+["מניחים את הבצל הירוק במרכז הקערה, מעליו את השומשום ואת השומן בצד.","Pile the scallion greens in the center, sesame on top and the fat on the side."]]},
+
+/* ---------------- pasta, gnocchi, grains ---------------- */
+{id:"ptitim",c:4,he:"פתיתים עם נקניקיות",en:"Ptitim with Sausages",ing:[
+"650|g|נקניקיות טלה של משק לגזיאל, חתוכות לפרוסות של 1.5 ס\"מ|lamb sausages (Lagziel farm), sliced ⅝ inch thick",
+"500|g|פתיתים עגולים|pearl couscous (round ptitim)",
+"2|pc|בצלים בינוניים קצוצים גס|medium onion, roughly chopped/medium onions, roughly chopped",
+"1|tbsp|רסק עגבניות איכותי (כף גדושה)|high-quality tomato paste (heaping)",
+"2|tsp|צ'ילי אדום יבש|dried red chili",
+"1|tbsp|פפריקה מתוקה (כף גדושה)|sweet paprika (heaping)",
+"1|tbsp|שמן זית|olive oil",
+"3.1|cup|מים רותחים (525 מ\"ל)|boiling water (525 ml)",
+"||מלח גס|coarse salt"],st:[
+["מחממים סוטאז' עם שמן הזית ומעבירים אליו את הנקניקיות. מגבירים את האש וצולים עד שהנקניקיות מזהיבות.","Heat a sauté pan with the olive oil and add the sausages. Turn up the heat and brown them."],
+["מנמיכים את האש ומוציאים את הנקניקיות. מעבירים לסוטאז' את הבצל ומאדים על אש בינונית עם מעט מלח עד שהוא שקוף.","Lower the heat and take out the sausages. Add the onion to the pan with a little salt and cook over medium heat until translucent."],
+["מוסיפים פפריקה וצ'ילי ומאדים עוד 4-5 דקות, מוסיפים את הרסק ומאדים עוד כ-5 דק' תוך ערבוב.","Add the paprika and chili and cook 4–5 minutes more, then the tomato paste for about 5 more minutes, stirring."],
+["מגבירים את האש, מחזירים את הנקניקיות ומערבבים עוד כ-3 דקות.","Raise the heat, return the sausages and stir about 3 minutes."],
+["מוסיפים את הפתיתים, מערבבים היטב ומוסיפים את המים הרותחים. מערבבים שוב, טועמים את המים ומוסיפים מלח לפי הצורך.","Add the ptitim, stir well and pour in the boiling water. Stir again, taste the liquid and add salt as needed."],
+["מורידים לאש נמוכה, מכסים ומבשלים 8 דקות. מכבים את האש וממתינים 5 דקות נוספות.","Turn the heat to low, cover and cook 8 minutes. Turn off the heat and let stand 5 more minutes."]]},
+
+{id:"freekeh",c:4,he:"תבשיל פריקי עם מנגולד",en:"Freekeh with Swiss Chard",ing:[
+"2|cup|פריקי|freekeh",
+"10|pc|עלי מנגולד בגודל בינוני|medium Swiss chard leaf/medium Swiss chard leaves",
+"5|pc|שיני שום, דפוקות ופרוסות גס|garlic clove, crushed and roughly sliced/garlic cloves, crushed and roughly sliced",
+"3|tbsp|שמן זית|olive oil",
+"0.5|tsp|הל|ground cardamom",
+"0.5|tsp|כמון|ground cumin",
+"||מלח גס|coarse salt",
+"2.5|cup|מים חמימים|warm water"],st:[
+["שוטפים היטב את עלי המנגולד ומפרידים את הגבעול הלבן מהחלק הירוק. מנקים מהגבעול את החלקים הלא יפים וקוצצים דק. את החלק הירוק חותכים לרצועות של כ-2 ס\"מ.","Wash the chard well and separate the white stems from the green leaves. Trim the stems and chop them finely. Cut the leaves into strips about ¾ inch (2 cm) wide."],
+["בסיר רחב מחממים את שמן הזית על אש בינונית.","Heat the olive oil in a wide pot over medium heat."],
+["מוסיפים את השום ומנענעים את הסיר.","Add the garlic and swirl the pot."],
+["אחרי כ-2 דקות מוסיפים את הגבעולים הקצוצים, כמון, הל ומעט מלח. מערבבים היטב, ואחרי 2 דק' מנמיכים את האש וממשיכים לערבב כל 2-3 דק'.","After about 2 minutes add the chopped stems, cumin, cardamom and a little salt. Stir well; after 2 minutes lower the heat and keep stirring every 2–3 minutes."],
+["אחרי רבע שעה מוסיפים את הפריקי, מגבירים את האש ומערבבים כדקה. מוסיפים את המים, מערבבים, מביאים לרתיחה, מנמיכים את האש ומכסים.","After 15 minutes add the freekeh, raise the heat and stir for about a minute. Add the water, stir, bring to a boil, lower the heat and cover."],
+["אחרי 12 דקות מוסיפים את רצועות העלים, מגבירים את האש ומערבבים עד שהעלים מצטמקים ומתפזרים בפריקי (2-3 דק'). מכסים ומנמיכים את האש.","After 12 minutes add the leaves, raise the heat and stir until they wilt and are mixed through (2–3 minutes). Cover and lower the heat."],
+["אחרי 5 דקות נוספות מכבים את האש ומשאירים מכוסה 10 דקות.","After 5 more minutes turn off the heat and leave covered for 10 minutes."]]},
+
+{id:"cannelloni",c:4,he:"קנלוני חצילים שרופים",en:"Charred Eggplant Cannelloni",ing:[
+"## קנלוני|Cannelloni",
+"350|g|קמח לבצק פסטה עשיר (מתכון בנפרד)|flour, made into rich pasta dough (separate recipe)",
+"3|pc|חצילים בלאדי טריים מאוד בגודל בינוני|very fresh medium baladi eggplant/very fresh medium baladi eggplants",
+"100|g|גבינת פנחס מסוננת ומפוררת|Pinchas sheep's cheese (or feta), drained and crumbled",
+"1|pc|חבילת עלי תרד תורכי|pack Turkish spinach/packs Turkish spinach",
+"5|pc|ענפי זעתר טרי|fresh za'atar sprig/fresh za'atar sprigs",
+"80|g|גבינת פקורינו מגוררת דק|finely grated pecorino",
+"1|tbsp|שמן זית|olive oil",
+"## רוטב בשמל|Béchamel",
+"50|g|חמאה|butter",
+"50|g|קמח לבן|all-purpose flour",
+"600|ml|חלב מלא|whole milk",
+"0.5|tsp|מלח דק|fine salt",
+"||מעט אגוז מוסקט מגורד דק|a little freshly grated nutmeg",
+"||מעט פלפל לבן טחון|a little ground white pepper"],st:[
+"## רוטב הבשמל|Béchamel",
+["מחממים את החלב בסיר קטן עד שמתחיל להעלות אדים, בלי להרתיח.","Heat the milk in a small pot until it steams. Do not boil."],
+["בסיר בינוני ממיסים את החמאה על אש בינונית-נמוכה, מוסיפים את הקמח בבת אחת וטורפים כ-2 דקות, עד שהתערובת חלקה ומבעבעת אבל לא משנה צבע.","In a medium pot, melt the butter over medium-low heat, add the flour all at once and whisk about 2 minutes, until smooth and bubbling but not colored."],
+["מוסיפים את החלב החם בהדרגה, כשליש בכל פעם, תוך טריפה מתמדת כדי שלא ייווצרו גושים.","Add the hot milk a third at a time, whisking constantly so no lumps form."],
+["מביאים לרתיחה עדינה ומבשלים 5-7 דקות תוך טריפה, עד שהרוטב סמיך ומצפה את גב הכף.","Bring to a gentle boil and cook 5–7 minutes, whisking, until thick enough to coat the back of a spoon."],
+["מורידים מהאש ומתבלים במלח, מוסקט ופלפל לבן. אם לא משתמשים מיד, מכסים בניילון נצמד שנוגע בפני הרוטב.","Take off the heat and season with salt, nutmeg and white pepper. If not using right away, press plastic wrap onto the surface."],
+"## הקנלוני|Cannelloni",
+["קולים את החצילים שלמים על המנגל בחום גבוה מאוד עד שהקליפה חרוכה מכל הכיוונים. מעבירים למסננת ומניחים להתקרר.","Char the whole eggplants on a very hot grill until blackened all over. Move to a colander and let cool."],
+["חולטים את התרד במים רותחים כדקה וחצי, מעבירים למי קרח, מסננים היטב, מפרידים את העלים ושמים בקערה גדולה.","Blanch the spinach 1½ minutes in boiling water, plunge into ice water, drain well, separate the leaves and put them in a large bowl."],
+["מקלפים את החצילים בעדינות ומעבירים את הבשר לקערה. אפשר לפורר מעט מהקליפה החרוכה פנימה לטעם מעושן יותר.","Peel the eggplants gently and add the flesh to the bowl. Crumble in a little of the charred skin for more smoke."],
+["מוסיפים גבינת פנחס, עלי זעתר ושמן זית ומערבבים בעדינות כדי לא לפגוע במרקם החצילים. מעבירים לקירור.","Add the cheese, za'atar leaves and olive oil and fold gently so the eggplant keeps its texture. Refrigerate."],
+["מכינים תבנית פיירקס עם שכבת בשמל בתחתית.","Spread a layer of béchamel in a glass baking dish."],
+["מרדדים את בצק הפסטה לדרגה 2 במכונת הפסטה וחותכים עלים ברוחב התבנית.","Roll the pasta dough to setting 2 on the pasta machine and cut sheets the width of the dish."],
+["מסדרים שורת מילוי בשליש התחתון של כל עלה, מגלגלים ומעבירים לתבנית.","Lay a line of filling along the bottom third of each sheet, roll up and place in the dish."],
+["מוזגים את יתרת הבשמל כך שתכסה הכל ומפזרים מעל את הפקורינו.","Pour the rest of the béchamel over to cover everything and sprinkle with the pecorino."],
+["אופים בתנור שחומם ל-210 מעלות כ-25 דק', עד שהקנלוני משחים מאוד.","Bake in an oven preheated to 410°F (210°C) about 25 minutes, until deeply browned."]]},
+
+{id:"rigatoni",c:4,he:"ריגטוני בחמאת מרווה ותרד",en:"Rigatoni in Sage Butter with Spinach",ing:[
+"500|g|ריגטוני יבש (חבילה)|dried rigatoni (one package)",
+"15|pc|עלי מרווה טריים|fresh sage leaf/fresh sage leaves",
+"60|g|חמאה|butter",
+"2|cup|תרד טרי|fresh spinach",
+"1|cup|גבינת פרמז'ן מגוררת|grated Parmesan"],st:[
+["מעמידים סיר גדול מאוד מלא מים על אש גבוהה ומוסיפים {3:tbsp} מלח גס.","Set a very large pot of water over high heat and add {3:tbsp} coarse salt."],
+["בסיר נפרד שיכול להכיל את כל הפסטה ממיסים את החמאה על אש נמוכה, מוסיפים את עלי המרווה וממשיכים עד שהחמאה מקבלת גוון מעט חום. מכבים את האש.","In a second pot big enough for all the pasta, melt the butter over low heat, add the sage and cook until the butter turns light brown. Turn off the heat."],
+["כשהמים רותחים מבשלים את הפסטה דקה פחות מהוראות היצרן. שומרים {0.5:cup} ממי הבישול ומסננים.","When the water boils, cook the pasta 1 minute less than the package says. Save {0.5:cup} of the cooking water and drain."],
+["מעבירים את הפסטה לסיר עם המרווה, מדליקים אש גבוהה ומוסיפים את מי הבישול ששמרנו.","Move the pasta to the sage butter, turn the heat to high and add the saved water."],
+["כשהנוזלים רותחים מוסיפים את התרד תוך ערבוב, וכשהוא משנה צבע מוסיפים את הפרמז'ן תוך ערבוב.","When it bubbles, stir in the spinach, and once it wilts, stir in the Parmesan."],
+["כשהגבינה נטמעה והרוטב קרמי מכבים את האש, טועמים ומוסיפים מלח לפי הצורך.","When the cheese has melted into a creamy sauce, turn off the heat, taste and add salt as needed."]]},
+
+{id:"gnocchi",c:4,he:"ניוקי עננים בחמאת זעתר",en:"Cloud Gnocchi in Za'atar Butter",ing:[
+"1.5|kg|תפוחי אדמה אדומים גדולים|large red potatoes",
+"500|g|מלח גס (למצע האפייה ולמי הבישול)|coarse salt (for baking and the cooking water)",
+"100|g|קמח לבן|all-purpose flour",
+"2|pc|חלמוני ביצה|egg yolk/egg yolks",
+"30|g|גבינת פרמז'ן מגוררת|grated Parmesan",
+"150|g|חמאה|butter",
+"1|pc|חופן עלי זעתר טריים|handful fresh za'atar leaves/handfuls fresh za'atar leaves",
+"||מלח אטלנטי|flaky sea salt"],st:[
+["מרפדים תבנית בנייר אפייה, מפזרים עליו את המלח הגס ומסדרים עליו את תפוחי האדמה. אופים בתנור שחומם ל-300 מעלות כ-45 דק', עד שהקליפה חרוכה והפנים רך מאוד.","Line a baking sheet with parchment, spread the coarse salt over it and set the potatoes on top. Bake at 570°F (300°C), or your oven's maximum, about 45 minutes, until the skins are charred and the insides very soft."],
+["מכינים מראש מולי או מעוך תפוחי אדמה (חשוב לחבר את התפוחים עם שאר המרכיבים לפני שהם מתקררים). חוצים לאורך ומרוקנים את התוכן למולי ויוצרים פירה חלק לחלוטין.","Have a food mill or ricer ready (the potatoes must be mixed with the rest while still hot). Halve them lengthwise, scoop the flesh into the mill and make a completely smooth purée."],
+["מוסיפים קמח, חלמונים, פרמז'ן וכפית שטוחה מהמלח ומערבבים היטב.","Add the flour, yolks, Parmesan and a level teaspoon of the salt and mix well."],
+["על משטח מקומח היטב יוצרים נחשים בעובי כ-1.5 ס\"מ וחותכים לפיסות באורך כ-3 ס\"מ.","On a well-floured surface, roll ropes about ⅝ inch (1.5 cm) thick and cut into 1¼-inch (3 cm) pieces."],
+["בסיר גדול מרתיחים מים על אש גבוהה ומוסיפים כף מהמלח לכל ליטר מים.","Bring a large pot of water to a boil and add 1 Tbsp of the salt per quart of water."],
+["במחבת גדולה מחממים על אש נמוכה את החמאה, הזעתר, {6:tbsp} מים וכפית מלח אטלנטי. כשהחמאה מתחילה להימס מנענעים את המחבת עד שנוצרת אמולסיה חלקה, ומשאירים על אש נמוכה.","In a large pan over low heat, warm the butter, za'atar, {6:tbsp} water and 1 tsp sea salt. As the butter melts, swirl the pan into a smooth emulsion and keep it on low."],
+["מבשלים את הניוקי במים עד שכולם צפים, ועוד דקה.","Boil the gnocchi until they all float, then 1 minute more."],
+["בכף מחוררת מעבירים את הניוקי למחבת, מנענעים עד שכולם מצופים ומעבירים לכלי הגשה.","Lift them into the pan with a slotted spoon, swirl until coated and serve."]]},
+
+{id:"springpasta",c:4,he:"פסטה 'אביב' ירוקה",en:"Green Spring Pasta",ing:[
+"2|pc|שום ירוק, קצוץ גס (להסיר את הגבעול האמצעי, הוא לא אכיל)|green garlic, roughly chopped (remove the tough center stalk)/green garlic, roughly chopped (remove the tough center stalks)",
+"1|pc|כרישה קצוצה גס|leek, roughly chopped/leeks, roughly chopped",
+"5|pc|עלי מנגולד קצוצים גס, בלי החלק הלבן|Swiss chard leaf, roughly chopped, no stem/Swiss chard leaves, roughly chopped, no stems",
+"0.5|cup|עלי נענע|mint leaves",
+"0.25|cup|עלי פטרוזיליה|parsley leaves",
+"70|g|חמאה|butter",
+"250|ml|שמנת|cream",
+"40|g|פרמז'ן מגוררת דק|finely grated Parmesan",
+"500|g|פסטה קצרה (חבילה)|short pasta (one package)"],st:[
+["ממיסים את החמאה בסיר עמוק על אש בינונית, מוסיפים שום ירוק, כרישה, מנגולד, נענע, פטרוזיליה ומעט מלח ומאדים כרבע שעה עד שהכל מתרכך.","Melt the butter in a deep pot over medium heat, add the green garlic, leek, chard, mint, parsley and a little salt and cook about 15 minutes, until soft."],
+["מוסיפים את השמנת, מביאים לרתיחה ומבשלים עוד כרבע שעה.","Add the cream, bring to a boil and cook about 15 minutes more."],
+["במקביל מרתיחים לפחות {5:l} מים בסיר גדול ומוסיפים כ-{50:g} מלח.","Meanwhile bring at least {5:l} water to a boil in a large pot and add about {50:g} salt."],
+["מוסיפים לרוטב את הפרמז'ן וטוחנים אותו דק מאוד.","Add the Parmesan to the sauce and blend until very smooth."],
+["מבשלים את הפסטה לפי הוראות היצרן, מסננים, מעבירים לסיר עם הרוטב ומערבבים היטב.","Cook the pasta as the package says, drain, add to the sauce and mix well."]]},
+
+{id:"risotto",c:4,he:"ריזוטו חיטה ירוקה עם לחי עגל ומנגולד",en:"Freekeh Risotto with Veal Cheeks and Chard",ing:[
+"1.5|kg|לחי עגל|veal cheeks",
+"5-8|pc|עלי מנגולד טריים ויפים|fresh Swiss chard leaf/fresh Swiss chard leaves",
+"3|pc|בצלים לבנים בינוניים|medium white onion/medium white onions",
+"3|pc|גזרים בינוניים|medium carrot/medium carrots",
+"3|pc|עצמות בקר עם מח|beef marrow bone/beef marrow bones",
+"3|cup|חיטה ירוקה גרוסה (פריקי)|cracked freekeh",
+"1|pc|צרור פטרוזיליה|bunch parsley/bunches parsley",
+"1|pc|צרור נענע|bunch mint/bunches mint",
+"5|pc|ענפי טימין|thyme sprig/thyme sprigs",
+"100|ml|שמן זית|olive oil",
+"5|pc|גרגרי פלפל אנגלי|allspice berry/allspice berries",
+"2|pc|עלי דפנה|bay leaf/bay leaves",
+"||מלח גס לפי הצורך|coarse salt to taste",
+"2|cup|יין לבן|white wine"],st:[
+"## בישול הבשר|Braising the cheeks",
+["מנקים את הבשר אך ורק מהבלוטות ומשאירים בנתחים גדולים ככל האפשר (אפשר לבקש מהקצב).","Trim the meat of glands only and leave it in pieces as large as possible (the butcher can do this)."],
+["מעסים את הנתחים במעט משמן הזית וצורבים את הבשר והעצמות במחבת לוהטת מכל הצדדים עד לצבע חום קרמלי.","Rub the meat with a little of the olive oil and sear the meat and bones in a very hot pan on all sides until deep caramel brown."],
+["חותכים את הגזר לפרוסות עבות (בלי לקלף), חותכים 2 בצלים לרבעים עם הקליפה ומפרידים את עלי הפטרוזיליה מהגבעולים.","Cut the carrots into thick slices (no need to peel), quarter 2 onions with their skins on and pick the parsley leaves from the stems."],
+["מסדרים את הבשר והעצמות בתחתית קדירה כבדה, ומעליהם הבצל והגזר. מוסיפים {1:cup} יין לבן ומים עד 2 ס\"מ מעל לכיסוי, ואת גבעולי הפטרוזיליה, הדפנה, הפלפל האנגלי והטימין.","Lay the meat and bones in a heavy pot with the onion and carrot on top. Add {1:cup} white wine and water to ¾ inch (2 cm) above, then the parsley stems, bay leaves, allspice and thyme."],
+["מביאים לרתיחה על אש גבוהה, מכסים ומבשלים על אש נמוכה עד שהבשר רך מאוד וכמעט מתפרק (כ-4-5 שעות).","Bring to a boil over high heat, cover and simmer over low heat until very tender and almost falling apart (about 4–5 hours)."],
+["מסננים ומפרידים את הבשר והעצמות. שומרים את הנוזל והעצמות בצד. את הבשר מצננים כשעה בחוץ ומעבירים למקרר.","Strain and separate the meat and bones. Keep the liquid and bones. Let the meat cool about an hour, then refrigerate."],
+"## הריזוטו|The risotto",
+["מפרידים את החלק הירוק של המנגולד מהלבן: את הירוק חותכים גס מאוד ואת הלבן לקוביות קטנות. קוצצים את הבצל שנותר, ואת עלי הפטרוזיליה והנענע.","Separate the chard greens from the stems: cut the greens very roughly and dice the stems small. Chop the remaining onion, and the parsley and mint leaves."],
+["חותכים את הבשר הקר מאוד לקוביות של 1.5 ס\"מ ומשאירים רק חלק מהשומן. מביאים את נוזל הבישול לרתיחה ומשאירים על אש נמוכה.","Cut the well-chilled meat into ⅝-inch (1.5 cm) cubes, keeping only some of the fat. Bring the cooking liquid to a boil and keep it on low heat."],
+["בסיר בינוני מחממים את שמן הזית על אש בינונית, מוסיפים את הבצל וכחצי כף מלח גס ומטגנים עד שקיפות. מוסיפים את קוביות גבעולי המנגולד.","Heat the olive oil in a medium pot over medium heat, add the onion and about ½ Tbsp coarse salt and cook until translucent. Add the diced chard stems."],
+["מוסיפים את החיטה הירוקה ומטגנים תוך ערבוב 2-3 דקות. מוסיפים {1:cup} יין לבן ומערבבים עד שנספג.","Add the freekeh and stir 2–3 minutes. Add {1:cup} white wine and stir until absorbed."],
+["מוסיפים בכל פעם כחצי כוס מהנוזל הרותח תוך ערבוב עד ספיגה, וחוזרים עד שהחיטה כמעט רכה.","Add the hot liquid about ½ cup at a time, stirring until absorbed, until the freekeh is nearly tender."],
+["מוסיפים את ירוק המנגולד, את קוביות הבשר ואת המח מהעצמות. מוסיפים עוד מהנוזל תוך ערבוב, טועמים ומוסיפים מלח.","Add the chard greens, the meat and the marrow from the bones. Add more liquid while stirring, taste and add salt."],
+["מבשלים עוד 3-4 דקות, מכבים את האש, מוסיפים חצי מעשבי התיבול הקצוצים ומערבבים.","Cook 3–4 minutes more, turn off the heat and stir in half the chopped herbs."],
+["מגישים כ-3 כפות הגשה בצלחת ומקשטים בשמן זית ובעשבי התיבול שנותרו.","Serve about 3 serving spoons per plate, finished with olive oil and the remaining herbs."]]},
+
+/* ---------------- sauces ---------------- */
+{id:"bechamel",c:5,he:"רוטב בשמל",en:"Béchamel Sauce",ing:[
+"50|g|חמאה|butter",
+"50|g|קמח לבן|all-purpose flour",
+"600|ml|חלב מלא|whole milk",
+"0.5|tsp|מלח דק|fine salt",
+"||מעט אגוז מוסקט מגורד דק|a little freshly grated nutmeg",
+"||מעט פלפל לבן טחון|a little ground white pepper"],st:[
+["מחממים את החלב בסיר קטן עד שמתחיל להעלות אדים, בלי להרתיח.","Heat the milk in a small pot until it steams. Do not boil."],
+["בסיר בינוני ממיסים את החמאה על אש בינונית-נמוכה, מוסיפים את הקמח בבת אחת וטורפים כ-2 דקות, עד שהתערובת חלקה ומבעבעת אבל לא משנה צבע.","In a medium pot, melt the butter over medium-low heat, add the flour all at once and whisk about 2 minutes, until smooth and bubbling but not colored."],
+["מוסיפים את החלב החם בהדרגה, כשליש בכל פעם, תוך טריפה מתמדת כדי שלא ייווצרו גושים.","Add the hot milk a third at a time, whisking constantly so no lumps form."],
+["מביאים לרתיחה עדינה ומבשלים 5-7 דקות תוך טריפה, עד שהרוטב סמיך ומצפה את גב הכף.","Bring to a gentle boil and cook 5–7 minutes, whisking, until thick enough to coat the back of a spoon."],
+["מורידים מהאש ומתבלים במלח, מוסקט ופלפל לבן.","Take off the heat and season with salt, nutmeg and white pepper."],
+["אם לא משתמשים מיד, מכסים בניילון נצמד שנוגע בפני הרוטב כדי שלא ייווצר קרום.","If not using right away, press plastic wrap onto the surface so no skin forms."]]},
+
+{id:"bolognese",c:5,he:"רוטב בולונז",en:"Bolognese Sauce",ing:[
+"0.5|cup|שמן זית|olive oil",
+"4|pc|שיני שום דפוקות|garlic clove, crushed/garlic cloves, crushed",
+"3|pc|גזרים בינוניים, קלופים ומגורדים גס|medium carrot, peeled and coarsely grated/medium carrots, peeled and coarsely grated",
+"2|pc|בצלים בינוניים פרוסים דק מאוד לרבעי טבעות|medium onion, very thinly sliced into quarter-rings/medium onions, very thinly sliced into quarter-rings",
+"0.25|pc|אגוז מוסקט מגורד דק|whole nutmeg, finely grated/whole nutmegs, finely grated",
+"500|g|בשר בקר טחון שמן|fatty ground beef",
+"0.5|cup|יין אדום יבש|dry red wine",
+"2|pc|עגבניות בינוניות בשלות מאוד, קצוצות דק|very ripe medium tomato, finely chopped/very ripe medium tomatoes, finely chopped",
+"1|pc|צרור זעתר/טימין/אורגנו טרי|bunch fresh za'atar, thyme or oregano/bunches fresh za'atar, thyme or oregano",
+"||מלח גס|coarse salt"],st:[
+["מחממים את שמן הזית על אש בינונית, מוסיפים את השום ומאדים כ-5 דקות.","Heat the olive oil over medium heat, add the garlic and cook about 5 minutes."],
+["מוסיפים את הגזר המגורד, מוסקט ומעט מלח, מגבירים את האש ומאדים תוך ערבוב כ-10 דק'.","Add the grated carrot, nutmeg and a little salt, raise the heat and cook, stirring, about 10 minutes."],
+["מוסיפים את הבצל ומעט מלח, מורידים לאש נמוכה ומאדים כחצי שעה, תוך ערבוב כל כמה דקות, עד שהכל נהפך לעיסה רכה.","Add the onion and a little salt, lower the heat and cook about 30 minutes, stirring every few minutes, until everything is soft and jammy."],
+["מוסיפים את הבשר, מגבירים את האש ומערבבים ברציפות עד שכל הבשר משנה צבע.","Add the beef, raise the heat and stir constantly until it has all changed color."],
+["מוסיפים את היין ונותנים לו להתאדות כ-5 דקות. מוסיפים את העגבניות, מביאים לרתיחה, מנמיכים את האש ומבשלים כשעה תוך ערבוב מדי פעם.","Add the wine and let it cook off about 5 minutes. Add the tomatoes, bring to a boil, lower the heat and simmer about an hour, stirring now and then."],
+["מוסיפים את עשבי התיבול, מערבבים, טועמים ומוסיפים מלח לפי הצורך.","Add the herbs, stir, taste and add salt as needed."]]},
+
+/* ---------------- meat ---------------- */
+{id:"shpondra",c:6,he:"תבשיל שפונדרה וירקות שורש",en:"Shpondra and Root Vegetable Stew",y:[4,"מנות","servings"],ing:[
+"1.2|kg|שפונדרה עם העצם, חתוכה לקוביות של 5*5 ס\"מ|bone-in beef flanken (shpondra), cut into 2-inch (5 cm) pieces",
+"4|pc|גזרים קטנים ויפים|small carrot/small carrots",
+"4|pc|בצלים קטנים ויפים|small onion/small onions",
+"2|pc|פקעות שומר קטנות|small fennel bulb/small fennel bulbs",
+"0.5|pc|צרור פטרוזיליה|bunch parsley/bunches parsley",
+"10|pc|ענפי טימין|thyme sprig/thyme sprigs",
+"1.5|cup|יין אדום|red wine",
+"||מעט שמן זית|a little olive oil",
+"||מעט מלח|a little salt",
+"||מעט פלפל שחור גרוס גס|a little coarsely ground black pepper"],st:[
+["מעסים את הבשר בשמן זית ופלפל שחור וצורבים במחבת לוהטת עד שהוא משחים מכל הצדדים. מעבירים לסיר גדול וכבד.","Rub the meat with olive oil and black pepper and sear in a very hot pan until browned on all sides. Move to a large heavy pot."],
+["שופכים את היין למחבת הלוהטת ומגרדים את המשקעים. מעבירים את היין לסיר, מוסיפים מים עד 3 ס\"מ מעל הבשר, מביאים לרתיחה, מנמיכים את האש, מכסים וממשיכים לבשל.","Pour the wine into the hot pan and scrape up the browned bits. Add it to the pot with water to 1¼ inches (3 cm) above the meat, bring to a boil, lower the heat, cover and keep cooking."],
+["מורידים את \"השערות\" של הבצלים ושוטפים היטב (עם הקליפה), מקלפים את הגזר וחותכים את השומר לרבעים.","Trim the roots from the onions and wash them well (keep the skins on), peel the carrots and quarter the fennel."],
+["אחרי כשעה של בישול מוסיפים את הירקות, הפטרוזיליה והטימין.","After about an hour, add the vegetables, parsley and thyme."],
+["אחרי כשעתיים נוספות בודקים אם הבשר רך. הוא צריך כמעט \"ליפול\" מהעצם אבל לא להתפורר.","After about 2 more hours, check the meat. It should almost fall off the bone but not shred."],
+["כשהבשר רך טועמים את הנוזל ומוסיפים מלח לפי הצורך. שולפים במלקחיים את הפטרוזיליה והטימין.","When tender, taste the liquid and add salt. Pull out the parsley and thyme with tongs."],
+["מסדרים בכל צלחת 2 חתיכות בשר, גזר, בצל (כדאי לחצות אותו אחרי הבישול) ו-2 רבעי שומר, יוצקים מעט מהנוזל ומגישים.","Plate 2 pieces of meat, a carrot, an onion (halved after cooking) and 2 fennel quarters per person, spoon over some of the liquid and serve."]]},
+
+{id:"leekpatties",c:6,he:"קציצות מטוגנות של כרישה ובשר",en:"Fried Leek and Beef Patties",ing:[
+"500|g|בשר טחון שמן|fatty ground beef",
+"3|pc|כרישות, החלק הלבן קצוץ|leek, white part chopped/leeks, white parts chopped",
+"0.5|cup|פירורי לחם|breadcrumbs",
+"1|pc|ביצה|egg/eggs",
+"1|tbsp|כמון|ground cumin",
+"1|tsp|כוסברה טחונה|ground coriander",
+"||שמן זית לטיגון|olive oil for frying",
+"||מלח גס|coarse salt"],st:[
+["מאדים את הכרישה על אש נמוכה עם מעט מאוד שמן ומלח כ-40 דקות, עד שהיא רכה לגמרי. אם נדבק לתחתית מוסיפים מעט מים. מקררים.","Sweat the leeks over low heat with very little oil and salt about 40 minutes, until completely soft. If they stick, add a splash of water. Let cool."],
+["שמים את הכרישה המקוררת ואת כל שאר המרכיבים בקערה ולשים היטב עד שמתקבלת עיסה אחידה ויציבה.","Put the cooled leeks and all the other ingredients in a bowl and knead until even and firm."],
+["מחממים סוטאז' על אש בינונית עם כ-1 ס\"מ שמן זית. מטגנים קציצה קטנה מאוד לטעימה ומתקנים תיבול.","Heat about ⅜ inch (1 cm) of olive oil in a sauté pan over medium heat. Fry one tiny patty, taste and adjust the seasoning."],
+["יוצרים קציצות שטוחות של כ-{30:g} ומטגנים כ-4 דקות מכל צד, עד שמתקבלת שכבה שחומה (בלי שחור!) מכל צד.","Shape flat patties of about {30:g} and fry about 4 minutes per side, until evenly deep brown (not black!)."]]},
+
+{id:"tataki",c:6,he:"טטאקי בקר על טאבולה",en:"Beef Tataki on Tabbouleh",ing:[
+"## טטאקי|Tataki",
+"500|g|פילה בקר, החלק האמצעי|beef tenderloin, center cut",
+"||מעט שמן זית|a little olive oil",
+"||פלפל שחור גרוס טרי מאוד|freshly cracked black pepper",
+"||מלח גס|coarse salt",
+"## טאבולה|Tabbouleh",
+"0.5|cup|כוסברה קצוצה דק|finely chopped cilantro",
+"0.5|cup|פטרוזיליה קצוצה דק|finely chopped parsley",
+"0.5|cup|נענע קצוצה דק|finely chopped mint",
+"1|pc|מלפפון קצוץ דק|cucumber, finely chopped/cucumbers, finely chopped",
+"0.5|cup|פריקי|freekeh",
+"0.5|pc|בצל קצוץ דק|onion, finely chopped/onions, finely chopped",
+"2|tbsp|שמן זית|olive oil",
+"1|pc|לימון, סחוט|lemon, juiced/lemons, juiced",
+"||מלח גס|coarse salt",
+"||מלח אטלנטי|flaky sea salt",
+"||הל טחון|ground cardamom",
+"||כמון טחון|ground cumin",
+"## ויניגרט סויה ולימון|Soy-lemon vinaigrette",
+"0.25|cup|שמן זית|olive oil",
+"3|tbsp|רוטב סויה איכותי|good soy sauce",
+"3|tbsp|מיץ לימון|lemon juice"],st:[
+"## טטאקי|Tataki",
+["חוצים את הנתח לאורך, מעסים את שני הנתחים בשמן זית ומצפים בפלפל שחור גרוס טרי ובמלח גס.","Halve the tenderloin lengthwise, rub both pieces with olive oil and coat with cracked pepper and coarse salt."],
+["מחממים מחבת ברזל על אש גבוהה כעשר דקות, עד שהיא מעלה עשן.","Heat a cast-iron pan over high heat about 10 minutes, until smoking."],
+["צורבים את הנתחים כדקה מכל צד, עד לצריבה חומה ואחידה ככל האפשר.","Sear about 1 minute per side for an even brown crust."],
+["עוטפים בניילון נצמד, מקררים שעה לפחות ופורסים לפרוסות בעובי חצי ס\"מ.","Wrap in plastic, chill at least 1 hour and slice ¼ inch (½ cm) thick."],
+"## טאבולה|Tabbouleh",
+["בסיר קטן מחממים את שמן הזית על אש בינונית, מוסיפים את הבצל והתבלינים ומאדים עד שקיפות.","Heat the olive oil in a small pot over medium heat, add the onion and spices and cook until translucent."],
+["מוסיפים את הפריקי, מערבבים היטב ומוסיפים {0.75:cup} מים רותחים. טועמים את המים ומוסיפים מלח גס. מנמיכים את האש ומבשלים במכסה סגור כרבע שעה, עד שכל המים נספגים. מעבירים לכלי ולמקרר.","Add the freekeh, stir well and pour in {0.75:cup} boiling water. Taste the water and add coarse salt. Lower the heat, cover and cook about 15 minutes, until the water is absorbed. Move to a container and refrigerate."],
+["מעבירים את עשבי התיבול והמלפפון לקערה, מוסיפים {2-3:tbsp} מהפריקי המקורר ומתבלים בשמן זית, מיץ לימון ומלח אטלנטי.","Put the herbs and cucumber in a bowl, add {2-3:tbsp} of the cooled freekeh and dress with olive oil, lemon juice and sea salt.","רק 2-3 כפות מתוך חצי כוס פריקי מבושל?","Only 2–3 Tbsp out of ½ cup cooked freekeh?"],
+"## ויניגרט סויה ולימון|Soy-lemon vinaigrette",
+["מעבירים את כל הרכיבים לקערה וטורפים היטב עד לקבלת מרקם אחיד.","Whisk everything together in a bowl until smooth.","חסר שלב הגשה – איך מגישים את הטטאקי עם הטאבולה והוויניגרט","Serving step missing: how the tataki, tabbouleh and vinaigrette come together on the plate"]]},
+
+{id:"lambballs",c:6,he:"קציצות טלה ברוטב עגבניות שרי, פקוס ונענע",en:"Lamb Meatballs in Cherry Tomato Sauce with Fakkus and Mint",y:[16,"קציצות","meatballs"],ing:[
+"600|g|בשר בקר טחון גס עם 15% שומן טלה|coarsely ground beef with 15% lamb fat",
+"500|g|עגבניות שרי תמר|date cherry tomatoes",
+"500|g|עגבניות בשלות|ripe tomatoes",
+"6|pc|שיני שום|garlic clove/garlic cloves",
+"1|pc|צרור נענע|bunch mint/bunches mint",
+"1|pc|צרור פטרוזיליה|bunch parsley/bunches parsley",
+"0.25|cup|דריש (בורגול דק מאוד)|extra-fine bulgur",
+"1|pc|ביצה טרופה|egg, beaten/eggs, beaten",
+"0.33|cup|שמן זית|olive oil",
+"3|pc|פקוסים טריים|fresh fakkus (Armenian cucumber)/fresh fakkus (Armenian cucumbers)",
+"1|pc|צ'ילי אדום חריף|hot red chili/hot red chilies",
+"1|tbsp|פפריקה|paprika",
+"||מלח גס|coarse salt"],st:[
+["קוצצים את הנענע והפטרוזיליה. מערבבים בקערה את הבשר, הדריש, הביצה, הפטרוזיליה, חצי מהנענע ומעט מלח גס ולשים היטב.","Chop the mint and parsley. Mix the meat, bulgur, egg, parsley, half the mint and a little coarse salt, and knead well."],
+["יוצרים קציצות עגולות ומהודקות. מחממים את השמן במחבת רחבה ועבה ומטגנים את הקציצות משני הצדדים עד שהן חומות בהירות. מעבירים לתבנית עם נייר סופג.","Shape firm round meatballs. Heat the oil in a wide heavy pan and brown the meatballs lightly on both sides. Drain on paper towels."],
+["מעבירים את המחבת לאש נמוכה ומוסיפים את השום. מטגנים תוך ערבוב כ-3 דקות, מוסיפים פפריקה וצ'ילי, ואחרי דקה את העגבניות ומעט מלח גס. ממשיכים לבשל על אש נמוכה.","Turn the pan to low and add the garlic. Cook, stirring, about 3 minutes, add the paprika and chili, then after a minute the tomatoes and a little coarse salt. Keep cooking on low."],
+["כשהעגבניות הפרישו נוזלים, מסדרים את הקציצות ברוטב, מכסים ומבשלים כשעה וחצי.","Once the tomatoes release their juices, nestle in the meatballs, cover and cook about 1½ hours."],
+["חותכים את הפקוס לקוביות של 1*1 ס\"מ. כשהקציצות רכות מפזרים את הפקוס על התבשיל, ומעל את הנענע שנותרה, ומגישים.","Dice the fakkus into ⅜-inch (1 cm) cubes. When the meatballs are tender, scatter the fakkus and the remaining mint over the top and serve."]]},
+
+{id:"asado",c:6,he:"אסאדו בתנור",en:"Oven Asado (Beef Short Ribs)",ing:[
+"2.5|kg|אסאדו טרי עם עצמות|fresh bone-in beef short ribs (asado)",
+"1|pc|צרור זעתר טרי|bunch fresh za'atar/bunches fresh za'atar",
+"||מעט מלח גס|a little coarse salt"],st:[
+["בסכין קטנה חורצים כ-10 חריצים קטנים (2 ס\"מ) בבשר, דוחפים לכל חריץ כמה עלי זעתר ומפזרים מעט מלח גס.","With a small knife cut about 10 small slits (¾ inch, 2 cm) into the meat, push a few za'atar leaves into each and sprinkle with a little coarse salt."],
+["מניחים את גבעולי הזעתר ואת העלים הנותרים בתבנית אלומיניום ומניחים אותה בתחתית התנור.","Put the za'atar stems and remaining leaves in a foil pan on the floor of the oven."],
+["מחממים את התנור למקסימום (270-300 מעלות) בתוכנית גריל עליון ותחתון.","Heat the oven to its maximum, 520–570°F (270–300°C), on top-and-bottom heat with the broiler."],
+["מסדרים את הבשר על רשת כשהעצמות למטה ומכניסים למסילה האמצעית.","Set the meat on a rack, bones down, on the middle shelf."],
+["המטבח יתמלא עשן. כשהנתח מזהיב היטב (כ-25 דק') מורידים את החום ל-140 מעלות וצולים עוד כ-4 שעות.","The kitchen will fill with smoke. Once well browned (about 25 minutes), lower the oven to 285°F (140°C) and roast about 4 more hours."]]},
+
+{id:"hamin",c:6,he:"חמין פריקי וחומוס",en:"Freekeh and Chickpea Hamin",ing:[
+"0.25|cup|שמן זית|olive oil",
+"4|pc|בצלים גדולים פרוסים לרבעי טבעות דקות|large onion, thinly sliced into quarter-rings/large onions, thinly sliced into quarter-rings",
+"0.5|cup|גרגרי חומוס|chickpeas",
+"0.5|cup|מיץ ענבים (תירוש)|grape juice",
+"2.5|cup|חיטה ירוקה (פריקי)|freekeh",
+"1|kg|אונטריב|beef chuck rib (untrib)",
+"8|pc|נקניקיות עגל חלב|veal sausage/veal sausages",
+"3|pc|תפוחי אדמה גדולים חתוכים לרבעים|large potato, quartered/large potatoes, quartered",
+"||מלח גס|coarse salt"],st:[
+["מחממים את השמן על אש נמוכה בסיר בינוני שנכנס לתנור, מוסיפים את הבצל ומלח בנדיבות ומאדים עד שהבצל זהוב (כשעה). מערבבים הרבה כדי שלא יישרף.","Heat the oil over low heat in a medium ovenproof pot, add the onions and a generous amount of salt and cook until golden (about an hour), stirring often so they do not burn."],
+["מוסיפים את החומוס, מערבבים ומגבירים את האש. אחרי כ-2 דקות מוסיפים את מיץ הענבים, מרתיחים, מוסיפים את הפריקי ומערבבים.","Add the chickpeas, stir and raise the heat. After about 2 minutes add the grape juice, bring to a boil, add the freekeh and stir."],
+["אחרי עוד 2 דקות מוסיפים מים עד כ-5 ס\"מ מעל לכיסוי, מערבבים היטב, טועמים ומוסיפים מלח לפי הצורך.","After 2 more minutes add water to about 2 inches (5 cm) above, stir well, taste and add salt."],
+["כשרותח מוסיפים את הבשר ו\"דוחפים\" אותו לתחתית הסיר, ומעליו מסדרים את תפוחי האדמה והנקניקיות.","When it boils, push the beef down to the bottom of the pot and arrange the potatoes and sausages on top."],
+["מכסים בנייר אפייה ומעליו המכסה, ומעבירים לתנור בחום 100 מעלות ל-12-24 שעות.","Cover with parchment and then the lid, and bake at 210°F (100°C) for 12–24 hours."]]},
+
+{id:"cholent",c:6,he:"צ'ולנט פולני",en:"Polish Cholent",ing:[
+"4|tbsp|שמן זית|olive oil",
+"5|pc|בצלים בינוניים פרוסים לרבעי פרוסות דקות|medium onion, thinly sliced into quarter-rings/medium onions, thinly sliced into quarter-rings",
+"100|g|שעועית בובעס|large white beans (bubbes)",
+"70|g|מיץ ענבים (תירוש), כשליש כוס|grape juice (about ⅓ cup)",
+"450|g|גריסי פנינה|pearl barley",
+"1|kg|בשר שריר / כתף / אונטריב / אסאדו|beef shank, shoulder, chuck rib or short ribs",
+"3|pc|תפוחי אדמה גדולים חתוכים לרבעים|large potato, quartered/large potatoes, quartered",
+"||מלח גס|coarse salt"],st:[
+["בסיר כבד בגודל בינוני מאדים את הבצל בשמן עם מעט מלח גס על אש נמוכה, תוך ערבוב, עד לקרמול – שעה עד שעה וחצי.","In a medium heavy pot, cook the onions in the oil with a little coarse salt over low heat, stirring, until caramelized, 1 to 1½ hours."],
+["כשהבצל מקבל צבע חום עמוק מוסיפים את השעועית ומערבבים כדקה. מוסיפים את מיץ הענבים, מגבירים את האש ומביאים לרתיחה.","When the onions are deep brown, add the beans and stir for about a minute. Add the grape juice, raise the heat and bring to a boil."],
+["מוסיפים את הגריסים, מנמיכים את האש ומערבבים היטב. מוסיפים מים עד 3 ס\"מ מעל לכיסוי.","Add the barley, lower the heat and stir well. Add water to 1¼ inches (3 cm) above everything."],
+["מניחים את נתח הבשר במרכז הסיר, משקיעים אותו עד לתחתית ומסדרים מעליו את תפוחי האדמה.","Set the meat in the center of the pot, push it down to the bottom and arrange the potatoes on top."],
+["מביאים לרתיחה, מכסים בנייר אפייה ומעליו מכסה הסיר, ומכניסים לתנור בחום 100 מעלות ל-12-18 שעות.","Bring to a boil, cover with parchment and then the lid, and bake at 210°F (100°C) for 12–18 hours."]]},
+
+/* ---------------- chicken ---------------- */
+{id:"peanutchicken",c:7,he:"עוף בחמאת בוטנים",en:"Peanut Butter Chicken",y:[4,"מנות","servings"],ing:[
+"4|pc|כרעי עוף|chicken leg quarter/chicken leg quarters",
+"100|g|חמאת בוטנים|peanut butter",
+"||כמה טיפות חומץ בלסמי|a few drops balsamic vinegar",
+"3|tbsp|רוטב סויה|soy sauce",
+"||מעט מים|a little water",
+"0.5|pc|צרור כוסברה טריה קצוצה|bunch fresh cilantro, chopped/bunches fresh cilantro, chopped"],st:[
+["מנקים היטב את הכרעיים משאריות שומן ונוצות. מערבבים בקערה גדולה את שאר החומרים מלבד המים, מעסים את הכרעיים בתערובת ומדללים במים לפי הצורך. מכסים ומשאירים לילה במקרר.","Clean the legs of excess fat and any feathers. In a large bowl mix everything else except the water, rub it into the chicken and thin with water as needed. Cover and refrigerate overnight."],
+["מחממים תנור ל-250 מעלות. שופכים את התערובת לתבנית עם דפנות גבוהות, מסדרים את הכרעיים כשהעור למעלה ומוסיפים מים עד חצי מגובה הכרעיים.","Heat the oven to 480°F (250°C). Pour the marinade into a high-sided pan, set the legs on it skin side up and add water halfway up the legs."],
+["אופים כ-20 דקות ומורידים ל-170 מעלות ל-30 דקות נוספות. בזמן האפייה יוצקים מהנוזל על הכרעיים כל כמה דקות. בודקים בסכין שהעוף עשוי ומוציאים.","Roast about 20 minutes, then lower to 340°F (170°C) for 30 minutes more, basting with the pan liquid every few minutes. Check with a knife that it is cooked through."],
+["מגישים כרע בכל צלחת, יוצקים מהנוזל ומפזרים מעט כוסברה.","Serve one leg per plate with some of the liquid and a little cilantro."]]},
+
+{id:"lemonchicken",c:7,he:"קציצות עוף בלימון",en:"Lemon Chicken Patties",ing:[
+"## קציצות|Patties",
+"500|g|פרגיות טחונות גס|coarsely ground boneless chicken thighs",
+"1|pc|תפוח אדמה בינוני, קלוף ומגורר דק|medium potato, peeled and finely grated/medium potatoes, peeled and finely grated",
+"1|pc|בצל בינוני קצוץ דק מאוד|medium onion, very finely chopped/medium onions, very finely chopped",
+"0.25|cup|פירורי לחם|breadcrumbs",
+"1|pc|ביצה|egg/eggs",
+"1.5|tsp|כורכום|turmeric",
+"1|tsp|כוסברה יבשה|ground coriander",
+"||מעט מאוד מלח|a very little salt",
+"## לציפוי ולטיגון|For coating and frying",
+"1|cup|קמח|flour",
+"2|pc|ביצים טרופות|egg, beaten/eggs, beaten",
+"1|cup|סולת|semolina",
+"1|l|שמן חמניות או קנולה|sunflower or canola oil",
+"## רוטב|Sauce",
+"3|tbsp|שמן זית|olive oil",
+"1|pc|בצל בינוני קצוץ גס|medium onion, roughly chopped/medium onions, roughly chopped",
+"4|pc|גבעולי סלרי ירוק קצוצים דק|celery stalk, finely chopped/celery stalks, finely chopped",
+"2|tbsp|כורכום|turmeric",
+"2|tsp|זרעי כמון|cumin seeds",
+"||מלח גס|coarse salt",
+"1|pc|לימון, סחוט|lemon, juiced/lemons, juiced",
+"3|pc|תפוחי אדמה בינוניים, קלופים וחתוכים לקוביות גדולות|medium potato, peeled and cut into large chunks/medium potatoes, peeled and cut into large chunks"],st:[
+["סוחטים היטב את תפוח האדמה המגורר. בקערה מערבבים את הפרגיות, תפוח האדמה, הבצל הקצוץ דק, פירורי הלחם, הביצה, {1.5:tsp} כורכום, הכוסברה ומעט מאוד מלח. לשים היטב, מכסים ומקררים חצי שעה.","Squeeze the grated potato dry. Mix the chicken, potato, finely chopped onion, breadcrumbs, egg, {1.5:tsp} turmeric, coriander and a very little salt. Knead well, cover and refrigerate 30 minutes."],
+["מכינים שלוש קערות: קמח, ביצים טרופות וסולת. בידיים רטובות יוצרים קציצות שטוחות מעט של כ-{40:g} ומעבירים כל אחת בקמח, בביצה ולבסוף בסולת.","Set out three bowls: flour, beaten egg and semolina. With wet hands shape slightly flat patties of about {40:g} and coat each in flour, then egg, then semolina."],
+["מחממים את השמן לחום בינוני-גבוה ומטגנים כ-2 דקות מכל צד עד שהקציצות מזהיבות. מעבירים לנייר סופג. הן לא צריכות להיות עשויות עד הסוף; הן ימשיכו להתבשל ברוטב.","Heat the oil over medium-high heat and fry about 2 minutes per side until golden. Drain on paper towels. They do not need to be cooked through; they finish in the sauce."],
+["בסיר רחב מחממים את שמן הזית על אש בינונית, מוסיפים את זרעי הכמון ומטגנים כחצי דקה עד שמריחים. מוסיפים את הבצל, הסלרי ומעט מלח גס ומאדים כ-10 דקות.","Heat the olive oil in a wide pot over medium heat, add the cumin seeds and fry about 30 seconds until fragrant. Add the onion, celery and a little coarse salt and cook about 10 minutes."],
+["מוסיפים {2:tbsp} כורכום ומערבבים דקה, מוסיפים את תפוחי האדמה ומים עד כיסוי. מביאים לרתיחה, טועמים ומוסיפים מלח.","Add {2:tbsp} turmeric and stir for a minute, add the potatoes and water to cover. Bring to a boil, taste and add salt."],
+["מסדרים את הקציצות מעל תפוחי האדמה ויוצקים את מיץ הלימון. מכסים, מנמיכים את האש ומבשלים כ-30 דקות, עד שתפוחי האדמה רכים והרוטב מסמיך מעט.","Lay the patties over the potatoes and pour in the lemon juice. Cover, lower the heat and cook about 30 minutes, until the potatoes are tender and the sauce thickens slightly."]]}
+];
+
+/* ---------- language & storage ---------- */
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let lang=store.get("lang","he"); if(lang!=="en")lang="he";
+let favs=new Set(store.get("favs",[])), cat=store.get("cat",-1);
+const EN=()=>lang==="en";
+const UI={
+ he:{title:"המתכונים של נעם",count:n=>n+" מתכונים",search:"חיפוש לפי שם או מצרך (למשל: פריקי, כוסברה)",all:"הכל",favs:"מועדפים ★",
+  ing:n=>n+" מצרכים",steps:n=>n+" שלבים",check:"לבדיקה",calc:"מחשבון כמויות",calcSub:"חלות, לחמניות, טבעונית וחלבית",
+  back:"→ לכל המתכונים",fav:"☆ למועדפים",faved:"★ במועדפים",wake:"☀ השאר מסך דלוק",noWake:"המסך לא נתמך כאן",reset:"נקה סימונים",
+  ingHead:"מצרכים",hint:"לחצו על מספר כדי לשנות אותו",method:"אופן ההכנה",times:"פי",timesLbl:"מכפיל הכמויות",reset1:"חזרה לכמות המקורית",
+  foot:"לחיצה על שלב מסמנת אותו כבוצע. שינוי של כל כמות מעדכן את כל המצרכים ואת הכמויות שבשלבים.",
+  noFav:"עדיין אין מועדפים. פתחו מתכון ולחצו על ☆ כדי לסמן אותו.",none:"לא נמצא מתכון שמתאים לחיפוש.",flag:"לבדיקה:",calcEyebrow:"מחשבון"},
+ en:{title:"Noam's Recipes",count:n=>n+" recipes",search:"Search by name or ingredient (e.g. freekeh, cilantro)",all:"All",favs:"Favorites ★",
+  ing:n=>n+" ingredients",steps:n=>n+" steps",check:"to check",calc:"Quantity calculator",calcSub:"loaves, rolls, vegan or dairy",
+  back:"← All recipes",fav:"☆ Favorite",faved:"★ Favorite",wake:"☀ Keep screen on",noWake:"Not supported here",reset:"Clear checks",
+  ingHead:"Ingredients",hint:"tap any number to change it",method:"Method",times:"×",timesLbl:"Batch size",reset1:"Back to original amounts",
+  foot:"Tap a step to mark it done. Changing any amount rescales every ingredient and the amounts in the steps. US measures are rounded; weigh when you can.",
+  noFav:"No favorites yet. Open a recipe and tap ☆ to add one.",none:"No recipe matches your search.",flag:"To check:",calcEyebrow:"Calculator"}};
+const t=()=>UI[lang];
+
+/* ---------- parsing ---------- */
+function parseIng(arr){const groups=[];let g={h:null,items:[]};groups.push(g);
+  arr.forEach(l=>{if(l.startsWith("## ")){const [h,e]=l.slice(3).split("|");g={h:[h,e],items:[]};groups.push(g);return}
+    const [q,u,he,en]=l.split("|");let lo=null,hi=null;
+    if(q.trim()){const p=q.split("-");lo=+p[0];hi=p[1]?+p[1]:null}
+    g.items.push({lo,hi,u:u.trim(),he,en})});
+  return groups.filter(x=>x.items.length)}
+function parseSt(arr){const groups=[];let g={h:null,items:[]};groups.push(g);
+  arr.forEach(s=>{if(typeof s==="string"){const [h,e]=s.slice(3).split("|");g={h:[h,e],items:[]};groups.push(g)}else g.items.push(s)});
+  return groups.filter(x=>x.items.length)}
+const SERV={sashimi:4,ceviche:4,carpaccio:4,sardines:4,palamida:4,fattoush:4,eggplant:2,falafel:6,hummus:6,krupnik:6,kneidlach:6,ramen:5,
+  ptitim:6,freekeh:6,cannelloni:4,rigatoni:4,gnocchi:6,springpasta:4,risotto:8,bechamel:4,bolognese:4,shpondra:4,leekpatties:4,tataki:4,
+  lambballs:4,asado:6,hamin:8,cholent:8,peanutchicken:4,lemonchicken:4};
+R.forEach(r=>{if(!r.calc)r.y=[SERV[r.id]||4,"סועדים","servings"]});
+R.forEach(r=>{r.I=parseIng(r.ing);r.S=parseSt(r.st);
+  r.nI=r.I.reduce((a,g)=>a+g.items.length,0);r.nS=r.S.reduce((a,g)=>a+g.items.length,0);
+  r.flags=r.S.reduce((a,g)=>a+g.items.filter(s=>s[2]).length,0);
+  r.hay=(r.he+" "+r.en+" "+r.ing.join(" ")).toLowerCase()});
+
+/* ---------- number formatting ---------- */
+const FR=[[0,""],[.125,"⅛"],[.25,"¼"],[.333,"⅓"],[.5,"½"],[.667,"⅔"],[.75,"¾"],[.875,"⅞"],[1,""]];
+function frac(x){let w=Math.floor(x),rem=x-w,b=FR[0];FR.forEach(f=>{if(Math.abs(f[0]-rem)<Math.abs(b[0]-rem))b=f});
+  if(b[0]===1){w+=1;b=FR[0]}if(w===0&&!b[1])return x>0?"⅛":"0";return (w>0?w:"")+b[1]}
+function roundG(x){return x<25?Math.round(x*2)/2:x<200?Math.round(x):Math.round(x/5)*5}
+function dec(x,d){return String(Math.round(x*Math.pow(10,d))/Math.pow(10,d))}
+const HEU={g:["גר'","גר'"],kg:['ק"ג','ק"ג'],ml:['מ"ל','מ"ל'],l:["ליטר","ליטר"],cup:["כוס","כוסות"],tbsp:["כף","כפות"],tsp:["כפית","כפיות"],pc:["",""]};
+const OZ=28.3495;
+/* returns {n: display number string, u: unit label, f: base units per displayed unit, sub: secondary text} */
+function disp(x,u){
+  if(!EN()){
+    const pl=x>1.01?1:0, lab=HEU[u]?HEU[u][pl]:"";
+    if(u==="g"||u==="ml")return{n:String(roundG(x)),u:lab,f:1};
+    if(u==="kg")return{n:dec(x,2),u:lab,f:1};
+    if(u==="l")return{n:dec(x,x<10?2:1),u:lab,f:1};
+    return{n:frac(x),u:lab,f:1};
+  }
+  if(u==="g"){const oz=x/OZ;if(oz>=16)return{n:dec(oz/16,oz>=48?1:2),u:"lb",f:453.6,sub:roundG(x)+" g"};
+    return{n:oz>=3?String(Math.round(oz*4)/4):oz>=.5?dec(oz,1):dec(oz,2),u:"oz",f:OZ,sub:roundG(x)+" g"}}
+  if(u==="kg"){const lb=x*2.20462;return{n:dec(lb,lb<10?2:1),u:"lb",f:1/2.20462,sub:dec(x,2)+" kg"}}
+  if(u==="ml"){if(x<=45){const tb=x/14.787;return tb>=1?{n:frac(tb),u:"Tbsp",f:14.787,sub:roundG(x)+" ml"}:{n:frac(tb*3),u:"tsp",f:4.929,sub:roundG(x)+" ml"}}
+    const c=x/236.6;return{n:frac(c),u:c>1.01?"cups":"cup",f:236.6,sub:roundG(x)+" ml"}}
+  if(u==="l"){const c=x*1000/236.6;if(c>=8)return{n:frac(x*1.05669),u:"qt",f:1/1.05669,sub:dec(x,2)+" l"};
+    return{n:frac(c),u:c>1.01?"cups":"cup",f:0.2366,sub:dec(x,2)+" l"}}
+  if(u==="cup")return{n:frac(x),u:x>1.01?"cups":"cup",f:1};
+  if(u==="tbsp")return{n:frac(x),u:"Tbsp",f:1};
+  if(u==="tsp")return{n:frac(x),u:"tsp",f:1};
+  return{n:frac(x),u:"",f:1};
+}
+function amountHtml(lo,hi,u,s){const a=disp(lo*s,u);let n=a.n;if(hi!=null)n+="–"+disp(hi*s,u).n;
+  return '<span class="num" dir="ltr">'+esc(n)+'</span>'+(a.u?" "+esc(a.u):"")}
+function parseNum(str){str=String(str).trim().replace(",",".");const map={"½":.5,"¼":.25,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125,"⅞":.875};
+  let v=0,m;
+  for(const k in map)if(str.includes(k)){v+=map[k];str=str.replace(k,"")}
+  str=str.trim();
+  if((m=str.match(/^(\d+)\s+(\d+)\/(\d+)$/)))return v+ +m[1]+m[2]/m[3];
+  if((m=str.match(/^(\d+)\/(\d+)$/)))return v+m[1]/m[2];
+  if(str==="")return v||NaN;
+  const n=parseFloat(str);return isFinite(n)?v+n:NaN}
+function ingName(it,x){if(!EN())return it.he;const p=it.en.split("/");return (x>1.01&&p[1])?p[1]:p[0]}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function stepHtml(txt,s){return esc(txt).replace(/\{([\d.]+)(?:-([\d.]+))?:(\w+)\}/g,(m,a,b,u)=>"<b>"+amountHtml(+a,b!=null?+b:null,u,s)+"</b>")}
+
+/* ---------- shell ---------- */
+const main=document.getElementById("main"),q=document.getElementById("q");
+function applyLang(){
+  document.documentElement.lang=lang;document.documentElement.dir=EN()?"ltr":"rtl";
+  document.title=t().title;document.getElementById("brand").textContent=t().title;
+  q.placeholder=t().search;q.setAttribute("aria-label",t().search);
+  wireLang();
+}
+function wireLang(){document.querySelectorAll(".langseg button").forEach(b=>{b.setAttribute("aria-pressed",b.dataset.v===lang);b.onclick=()=>{if(b.dataset.v===lang)return;lang=b.dataset.v;store.set("lang",lang);
+  try{localStorage.setItem("challah_lang",lang)}catch(e){}applyLang();route(true)}})}
+const LANGSEG='<div class="langseg" role="group" aria-label="Language"><button data-v="he">עברית</button><button data-v="en">English</button></div>';
+
+function chips(){const el=document.getElementById("chips");
+  const opts=[[-1,t().all,R.length],[-2,t().favs,favs.size],...CATS.map((n,i)=>[i,n[EN()?1:0],R.filter(r=>r.c===i).length])];
+  el.innerHTML=opts.map(([i,n,c])=>`<button class="chip" data-c="${i}" aria-pressed="${cat===i}">${esc(n)}<span class="n">${c}</span></button>`).join("");
+  el.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{cat=+b.dataset.c;store.set("cat",cat);chips();list()})}
+const nm=r=>EN()?r.en:r.he;
+function card(r){const meta=r.calc?`<span class="calcpill">${t().calc}</span><span>${t().calcSub}</span>`
+  :`<span>${t().ing(r.nI)}</span><span>${t().steps(r.nS)}</span>${r.y?`<span>${r.y[0]} ${esc(r.y[EN()?2:1])}</span>`:""}${r.flags?`<span class="flagpill">${r.flags} ${t().check}</span>`:""}`;
+  return `<button class="card" data-id="${r.id}"><span class="t">${favs.has(r.id)?'<span class="star">★ </span>':""}${esc(nm(r))}</span><span class="meta">${meta}</span></button>`}
+function list(){
+  document.getElementById("count").textContent=t().count(R.length);
+  const term=q.value.trim().toLowerCase();
+  const rs=R.filter(r=>(!term||r.hay.includes(term))&&(cat===-1||(cat===-2?favs.has(r.id):r.c===cat)));
+  if(!rs.length){main.innerHTML=`<p class="empty">${cat===-2&&!term?t().noFav:t().none}</p>`;return}
+  main.innerHTML=CATS.map((n,i)=>[n[EN()?1:0],rs.filter(r=>r.c===i)]).filter(g=>g[1].length)
+    .map(([n,a])=>`<section class="group"><h2>${esc(n)}<small>${a.length}</small></h2><div class="grid">${a.map(card).join("")}</div></section>`).join("");
+  main.querySelectorAll(".card").forEach(b=>b.onclick=()=>{location.hash=b.dataset.id})}
+
+/* ---------- recipe view ---------- */
+let wake=null, cur=null, scale=1, focusId=null;
+const scales=store.get("scales",{});
+async function toggleWake(btn){
+  if(wake){try{await wake.release()}catch(e){}wake=null;btn.setAttribute("aria-pressed","false");return}
+  try{wake=await navigator.wakeLock.request("screen");btn.setAttribute("aria-pressed","true");
+    wake.addEventListener("release",()=>{wake=null;btn.setAttribute("aria-pressed","false")})}
+  catch(e){btn.textContent=t().noWake;setTimeout(()=>btn.textContent=t().wake,2200)}}
+function head(r,eyebrow){return `<button class="back" id="back">${t().back}</button>
+  <div class="rhead"><div><div class="eyebrow">${esc(eyebrow)}</div><h2>${esc(nm(r))}</h2></div>
+  <div class="tools">${LANGSEG}<button class="tbtn" id="fav" aria-pressed="${favs.has(r.id)}">${favs.has(r.id)?t().faved:t().fav}</button>
+  ${r.calc?"":`<button class="tbtn" id="wake" aria-pressed="false">${t().wake}</button><button class="tbtn" id="reset">${t().reset}</button>`}</div></div>`}
+function wireHead(r){
+  wireLang();
+  document.getElementById("back").onclick=()=>{location.hash=""};
+  const fb=document.getElementById("fav");
+  fb.onclick=()=>{favs.has(r.id)?favs.delete(r.id):favs.add(r.id);store.set("favs",[...favs]);
+    fb.setAttribute("aria-pressed",favs.has(r.id));fb.textContent=favs.has(r.id)?t().faved:t().fav};
+  const wb=document.getElementById("wake");
+  if(wb){if(!("wakeLock" in navigator))wb.hidden=true;else wb.onclick=()=>toggleWake(wb)}
+  const rs=document.getElementById("reset");
+  if(rs)rs.onclick=()=>{main.querySelectorAll(".method li").forEach(l=>l.classList.remove("done"));main.querySelectorAll(".ing input[type=checkbox]").forEach(i=>i.checked=false)};
+}
+function showCalc(r){
+  document.getElementById("top").hidden=true;
+  main.innerHTML=head(r,CATS[r.c][EN()?1:0]+" · "+t().calcEyebrow)+`<iframe id="calc" class="calcframe" title="${esc(nm(r))}"></iframe>`;
+  window.scrollTo(0,0);wireHead(r);
+  try{localStorage.setItem("challah_lang",lang)}catch(e){}
+  const fr=document.getElementById("calc");
+  const fit=()=>{try{const d=fr.contentDocument;fr.style.height=Math.max(d.documentElement.scrollHeight,d.body.scrollHeight)+"px"}catch(e){}};
+  fr.addEventListener("load",()=>{try{const d=fr.contentDocument,th=document.documentElement.getAttribute("data-theme");
+    if(th)d.documentElement.setAttribute("data-theme",th);
+    fit();if(window.ResizeObserver)new ResizeObserver(fit).observe(d.body);
+    d.addEventListener("click",()=>setTimeout(fit,0));d.addEventListener("input",fit)}catch(e){}});
+  fr.srcdoc=document.getElementById("challahSrc").textContent.replace(/<\\\/script/g,"<"+"/script");
+}
+function show(r,keep){
+  if(r.calc)return showCalc(r);
+  document.getElementById("top").hidden=true;
+  if(!keep){cur=r;scale=scales[r.id]||1}
+  const ingHtml=r.I.map((g,gi)=>`${g.h?`<h4>${esc(g.h[EN()?1:0])}</h4>`:""}<ul>${g.items.map((it,ii)=>{
+    const id=`i-${gi}-${ii}`;
+    if(it.lo==null)return `<li><label class="irow"><input type="checkbox" id="c-${gi}-${ii}"><span class="iname">${esc(ingName(it,0))}</span></label></li>`;
+    const x=it.lo*scale,d=disp(x,it.u),rng=it.hi!=null;
+    const amt=rng?`<span class="amt">${amountHtml(it.lo,it.hi,it.u,scale)}</span>`
+      :`<input class="qin" id="${id}" data-g="${gi}" data-i="${ii}" inputmode="decimal" value="${esc(d.n)}" aria-label="${esc(ingName(it,x))}"><span class="qu">${esc(d.u)}</span>`;
+    return `<li><div class="irow"><input type="checkbox" id="c-${gi}-${ii}" aria-label="${esc(ingName(it,x))}"><label for="c-${gi}-${ii}" class="iname">${esc(ingName(it,x))}${d.sub?`<small>${esc(d.sub)}</small>`:""}</label><span class="qty">${amt}</span></div></li>`}).join("")}</ul>`).join("");
+  const stHtml=r.S.map(g=>`${g.h?`<h4>${esc(g.h[EN()?1:0])}</h4>`:""}<ol>${g.items.map(s=>`<li><span>${stepHtml(s[EN()?1:0],scale)}${s[2]?`<span class="flag"><b>${t().flag}</b> ${esc(s[EN()?3:2])}</span>`:""}</span></li>`).join("")}</ol>`).join("");
+  const y=r.y;
+  const sv=y[0]*scale;
+  const tiles=`<div class="tiles">
+    <div class="tile"><div class="tl">${EN()?"Servings":"מספר סועדים"}</div>
+      <div class="tedit"><button class="pm" id="minus" aria-label="${EN()?"Fewer servings":"פחות סועדים"}">−</button><input class="tin" id="yIn" inputmode="decimal" value="${esc(dec(sv,1))}" aria-label="${EN()?"Servings":"מספר סועדים"}"><button class="pm" id="plus" aria-label="${EN()?"More servings":"יותר סועדים"}">+</button></div>
+      <div class="tl">${EN()?"Recipe written for "+y[0]:"המתכון המקורי ל־"+y[0]+" סועדים"}${Math.abs(scale-1)>1e-6?` · <button class="linkbtn" id="orig">${EN()?"reset":"חזרה למקור"}</button>`:""}</div></div>
+  </div>`;
+  const checked=keep?[...main.querySelectorAll(".ing input[type=checkbox]")].map(c=>c.checked):null;
+  const done=keep?[...main.querySelectorAll(".method li")].map(l=>l.classList.contains("done")):null;
+  main.innerHTML=head(r,CATS[r.c][EN()?1:0])+tiles+`
+  <div class="layout"><aside class="ing"><div class="ihead"><h3>${t().ingHead}</h3><span class="hint">${t().hint}</span></div>${ingHtml}</aside>
+  <section class="method"><h3>${t().method}</h3>${stHtml}<p class="foot">${t().foot}</p></section></div>`;
+  if(checked)main.querySelectorAll(".ing input[type=checkbox]").forEach((c,i)=>c.checked=!!checked[i]);
+  if(done)main.querySelectorAll(".method li").forEach((l,i)=>done[i]&&l.classList.add("done"));
+  if(!keep)window.scrollTo(0,0);
+  wireHead(r);
+  main.querySelectorAll(".method li").forEach(li=>li.onclick=()=>li.classList.toggle("done"));
+  bindIn("yIn",v=>v/y[0]);
+  const step=d=>{const n=Math.max(1,Math.round(y[0]*scale)+d);setScale(n/y[0])};
+  document.getElementById("minus").onclick=()=>step(-1);
+  document.getElementById("plus").onclick=()=>step(1);
+  const ob=document.getElementById("orig");if(ob)ob.onclick=()=>setScale(1);
+  main.querySelectorAll(".qin").forEach(el=>{const it=r.I[+el.dataset.g].items[+el.dataset.i];
+    bindIn(el.id,v=>v*disp(it.lo*scale,it.u).f/it.lo)});
+  if(focusId){const el=document.getElementById(focusId);if(el){el.focus();const n=el.value.length;try{el.setSelectionRange(n,n)}catch(e){}}}
+}
+function setScale(s){if(!(s>0)||!isFinite(s))return;scale=Math.min(Math.max(s,0.05),50);scales[cur.id]=scale;store.set("scales",scales);focusId=null;show(cur,true)}
+function bindIn(id,toScale){const el=document.getElementById(id);if(!el)return;
+  el.addEventListener("focus",()=>{if(focusId!==id)el.select()});
+  el.addEventListener("keydown",e=>{if(e.key==="Enter")el.blur()});
+  el.addEventListener("change",()=>{const v=parseNum(el.value);focusId=null;if(v>0)setScale(toScale(v));else show(cur,true)});
+}
+function home(){document.getElementById("top").hidden=false;chips();list()}
+function route(keep){const id=location.hash.slice(1);const r=R.find(x=>x.id===id);
+  if(wake){try{wake.release()}catch(e){}wake=null}
+  if(r){if(keep&&cur&&cur.id===r.id)show(r,true);else show(r)}else home()}
+q.addEventListener("input",()=>{if(location.hash)location.hash="";list()});
+window.addEventListener("hashchange",()=>route());
+applyLang();route();
+
+</script>
+
+</body>
+</html>
